@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html ng-app="happyplace">
+  <head>
+    <meta charset="utf-8">
+    <title>example</title>
+    <!-- <script src="leaflet/leaflet.js"></script> -->
+    <script src="http://cdn.leafletjs.com/leaflet-0.7.1/leaflet.js"></script>
+    <!-- <script src="https://unpkg.com/leaflet@1.0.2/dist/leaflet.js"></script> -->
+    <script src="js/leaflet.markercluster.js"></script>
+    <script src="js/angular.js"></script>
+    <script src="js/angular-leaflet-directive.js"></script>
+    <script src="js/angular-ui-router.js"></script>
+    <script src="js/frontend.js"></script>
+    <!-- <link rel="stylesheet" href="leaflet/leaflet.css"> -->
+    <!-- <link rel="stylesheet" href="https://unpkg.com/leaflet@1.0.2/dist/leaflet.css" /> -->
+    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.1/leaflet.css">
+    <link rel="stylesheet" href="css/MarkerCluster.css">
+    <link rel="stylesheet" href="css/MarkerCluster.Default.css">
+    <link rel="stylesheet" href="css/style.css">
+  </head>
+  <body ng-controller="HappyPlaceMapController">
+    <div class="header">
+      <p>HappyPlace</p>
+      <p>Lat: {{lat}}, Lng: {{lng}}</p>
+      <button ng-click="addHappyPlace()">Make New Happy Place</button>
+    </div>
+    <div class="map">
+      <!-- <p><strong ng-bind="event"></strong> caught in listener</p> -->
+      <leaflet width="100%" height="80vh" center="center" markers="markers" event-broadcast="events"></leaflet>
+    </div>
+    <div class="footer">Twitter and stuff</div>
+  </body>
+</html>

@@ -1,0 +1,19 @@
+.header {
+  display: inline-block;
+  width: 100%;
+  height: 10vh;
+}
+
+.header p {
+  margin: 0;
+}
+
+.map {
+  width: 100%;
+  height: 80vh%;
+}
+
+.footer {
+  width: 100%;
+  height: 8vh;
+}
