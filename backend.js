@@ -127,6 +127,7 @@ app.get('/myhappyplaces/:username', function(req, res) {
 });
 
 app.post('/createhappyplace', function(req, res) {
+  console.log(req.body);
   var lat = req.body.coords.lat;
   var lng = req.body.coords.lng;
   var message = req.body.message;
@@ -153,7 +154,6 @@ app.post('/createhappyplace', function(req, res) {
     .catch(function(err) {
       res.json({message: 'you got an error', error: err});
     });
-    res.json({message: 'success!', data: data});
   })
   .catch(function(err) {
     res.json({message: 'you got an error', error: err});

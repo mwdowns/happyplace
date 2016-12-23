@@ -1,0 +1,59 @@
+
+<div class="map">
+  <leaflet width="100%" height="80vh" center="center" markers="markers" layers="layers" event-broadcast="events"></leaflet>
+</div>
+<div class="footer">Twitter and stuff</div>
+
+<!-- "you need to login" message div -->
+<div ng-show="needtologin" class="happyplacepopup">
+  <div class="makehappyplace">
+    <p class="error">You need to login to view your happyplaces.</p>
+    <button ng-click="clickedOK()">OK</button>
+  </div>
+</div>
+
+<!-- Login popup div -->
+<div ng-show="clickedLogin" class="happyplacepopup">
+  <div class="makehappyplace">
+    <form ng-submit="loginSubmit()" style="margin-top: 45px">
+      <div>
+        <label for="username">Username:</label>
+        <input class="username" ng-model="username" type="text" name="username" size="25">
+      </div>
+      <div>
+        <label for="password">Password:</label>
+        <input class="password" ng-model="password" type="password" name="password" size="25">
+      </div>
+      <button type="submit">Submit</button>
+    <p ng-show="loginerror" class="error">There was a problem logining in!</p>
+    </form>
+  </div>
+  <button class="closebutton" ng-click="closeHappyPlacePopup()">Close</button>
+</div>
+
+<!-- Signup popup div -->
+<div ng-show="clickedSignup" class="happyplacepopup">
+  <div class="makehappyplace">
+    <form ng-submit="signupSubmit()" style="margin-top: 15px">
+      <div>
+        <label for="username">Username:</label>
+        <input class="username" ng-model="username" type="text" name="username" size="25">
+      </div>
+      <div>
+        <label for="email">Email:</label>
+        <input class="email" ng-model="email" type="text" name="email" size="25">
+      </div>
+      <div>
+        <label for="password">Password:</label>
+        <input class="password" ng-model="password" type="password" name="password" size="25">
+      </div>
+      <div>
+        <label for="confirm-password">Confirm password:</label>
+        <input id="confirm-password" ng-model="confirmPassword" type="password" name="" size="25">
+      </div>
+      <button type="submit">Submit</button>
+    <p ng-show="signuperror" class="error">There was a problem signing up!</p>
+    </form>
+  </div>
+  <button class="closebutton" ng-click="closeHappyPlacePopup()">Close</button>
+</div>

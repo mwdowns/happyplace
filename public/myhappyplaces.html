@@ -14,8 +14,10 @@
   <div class="makehappyplace">
     <form ng-submit="addNewHappyPlace()">
     <p>Write a bit about what made you happy here:</p>
-    <input class="happyplacemessage" type="text" ng-model="message" placeholder="why is this a happy place?"><button>Create</button>
+    <textarea class="happyplacemessage" type="text" rows="4" cols="25" ng-model="message" placeholder="why is this a happy place?" maxlength="320"></textarea>
+    <p ng-show="messageerror" class="error">You must enter a message!</p><button>Create</button>
     </form>
-    <button ng-click="closeHappyPlacePopup()">Close</button>
+    <!-- <button class="closebutton" ng-click="closeHappyPlacePopup()">Close</button> -->
   </div>
+  <button class="closebutton" ng-click="closeHappyPlacePopup()">Close</button>
 </div>

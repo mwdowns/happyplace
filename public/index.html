@@ -33,6 +33,12 @@
 
     <div class="header" ng-controller="HappyPlaceHeaderController">
       <p>HappyPlace</p>
+      <div ng-hide="loggedin" class="loginsignup">
+        <button ng-click="clickedLogin()">Login</button> | <button ng-click="clickedSignup()">Signup</button>
+      </div>
+      <div ng-show="loggedin" class="logout">
+        Hello, {{username}}. Where's your HappyPlace today?<button ng-click="logout()">Logout</button>
+      </div>
     </div>
     <!-- <div class="map">
       <leaflet width="100%" height="80vh" center="center" markers="markers" event-broadcast="events"></leaflet>

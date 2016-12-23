@@ -1,3 +1,7 @@
+body {
+  margin: 0;
+}
+
 .uiview {
   position: relative;
 }
@@ -5,7 +9,8 @@
 .header {
   display: inline-block;
   width: 100%;
-  height: 10vh;
+  height: 6vh;
+  margin-top: 10px;
 }
 
 .header p {
@@ -14,7 +19,7 @@
 
 .map {
   width: 100%;
-  height: 80vh%;
+  height: 80vh;
 }
 
 .happyplacebuttons {
@@ -28,19 +33,36 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  height: 200px;
-  width: 200px;
+  height: 300px;
+  width: 300px;
   background-color: green;
   opacity: 0.6;
 }
 
 .makehappyplace {
+  text-align: center;
   background-color: white;
   opacity: 1.0;
   border: 5px solid black;
+  height: 200px;
+  width: 200px;
+  margin: auto;
+  margin-top: 45px;
+}
+
+.error {
+  margin: 0;
+  color: red;
+}
+
+.closebutton {
+  margin: 15px 10px 0 0;
+  float: right;
 }
 
 .footer {
   width: 100%;
-  height: 8vh;
+  height: 6vh;
+  margin-top: 10px;
+  text-align: center;
 }
