@@ -29,14 +29,15 @@
   </head>
   <!-- <body> -->
   <body>
-    <div class="header">
+
+
+    <div class="header" ng-controller="HappyPlaceHeaderController">
       <p>HappyPlace</p>
-      <button ng-click="addHappyPlace()">Make New Happy Place</button>
     </div>
     <!-- <div class="map">
       <leaflet width="100%" height="80vh" center="center" markers="markers" event-broadcast="events"></leaflet>
     </div>
     <div class="footer">Twitter and stuff</div> -->
-    <ui-view></ui-view>
+    <ui-view class="uiview"></ui-view>
   </body>
 </html>

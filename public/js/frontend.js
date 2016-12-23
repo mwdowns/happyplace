@@ -47,20 +47,58 @@ app.factory('happyplaceService', function($http, $cookies, $rootScope, $state) {
     return $http.get('/myhappyplaces/' + username);
   };
 
+  service.addHappyPlace = function(lat, lng, msg) {
+    var newHappyPlace = {
+      lat: lat,
+      lng: lng,
+      group: 'world',
+      focus: true,
+      message: msg,
+      draggable: false,
+      options: {
+        noHide: true
+      }
+    };
+    return $http.post('/createhappyplace', newHappyPlace);
+  };
+
   return service;
+});
+
+app.controller('HappyPlaceHeaderController', function($scope, $stateParams, $state, happyplaceService, $cookies, $rootScope) {
+
+
 });
 
 app.controller("MyHappyPlacesMapController", function($scope, $stateParams, $state, happyplaceService, $cookies, $rootScope) {
 
     var happyMarker = {
-      iconUrl: "img/happyplace2.png",
+      iconUrl: "img/happyplace6.png",
       shadowUrl: "img/markers_shadow.png",
       iconSize: [45, 45],
-      iconAnchor:   [17, 42],
-      popupAnchor: [1, -32],
+      iconAnchor:   [18, 42],
+      popupAnchor: [5, -40],
       shadowAnchor: [25, 3],
       shadowSize: [36, 16],
     };
+
+  $scope.addNewHappyPlace = function(message) {
+    console.log('clicked addnewhappyplace');
+    console.log($scope.message);
+    $scope.clickedhappyplace = true;
+  };
+
+  $scope.openHappyPlacePopup = function() {
+    $scope.clickedhappyplace = true;
+    console.log('clicked openpopup');
+    console.log('this is the lat, ', $scope.center.lat);
+    console.log('this is the lng, ', $scope.center.lng);
+  };
+
+  $scope.closeHappyPlacePopup = function() {
+    console.log('clicked closepopup')
+    $scope.clickedhappyplace = false;
+  };
 
   $scope.username = $stateParams.username;
   // $scope.username = 'mwdowns';
@@ -96,8 +134,8 @@ app.controller("MyHappyPlacesMapController", function($scope, $stateParams, $sta
         //   layerType: 'TERRAIN',
         //   type: 'google'
         // },
-        mapbox_light: {
-          name: 'Mapbox Light',
+        mapboxStreets: {
+          name: 'Mapbox Streets',
           url: 'https://api.mapbox.com/styles/v1/mapbox/streets-v10/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoibXdkb3ducyIsImEiOiJjaXd5MXVpZm4wMWZsMnpxcm5vbDVhcHZwIn0.m_HmCvf10RP_go_r3sFroQ',
           type: 'xyz',
           layerOptions: {
@@ -152,25 +190,25 @@ app.controller("MyHappyPlacesMapController", function($scope, $stateParams, $sta
 
   console.log($scope.markers);
 
-  $scope.addHappyPlace = function() {
-    console.log('button click', $scope.center.lat, $scope.center.lng);
-    var newHappyPlace = {
-      lat: $scope.center.lat,
-      lng: $scope.center.lng,
-      group: 'world',
-      focus: true,
-      message: "New Happy Place",
-      draggable: false,
-      options: {
-        noHide: true
-      }
-    };
-    $scope.markers.push(newHappyPlace);
-  };
+  // $scope.addHappyPlace = function() {
+  //   console.log('button click', $scope.center.lat, $scope.center.lng);
+  //   var newHappyPlace = {
+  //     lat: $scope.center.lat,
+  //     lng: $scope.center.lng,
+  //     group: 'world',
+  //     focus: true,
+  //     message: "New Happy Place",
+  //     draggable: false,
+  //     options: {
+  //       noHide: true
+  //     }
+  //   };
+  //   $scope.markers.push(newHappyPlace);
+  // };
   //This is the section where a user places a new marker using the click event. The args part of the function is where the lat/lng reside. I need to figure out a way to make it so that 1.) multiple happyplaces CANNOT be placed on the same coordinate and 2.) you can edit the message before placing the marker. Maybe I'll need to make the placing of a maker connected to a button and the map centers on clicks so that you can zero in on a place.
   $scope.$on('leafletDirectiveMap.click', function(event, args){
-    $scope.center.lat = args.leafletEvent.latlng.lat;
-    $scope.center.lng = args.leafletEvent.latlng.lng;
+    $rootScope.center.lat = args.leafletEvent.latlng.lat;
+    $rootScope.center.lng = args.leafletEvent.latlng.lng;
   });
 
 });

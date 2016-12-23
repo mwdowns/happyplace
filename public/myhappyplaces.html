@@ -2,7 +2,20 @@
   <p>HappyPlace</p>
   <button ng-click="addHappyPlace()">Make New Happy Place</button>
 </div> -->
+<div class="happyplacebuttons">
+  <button ng-click="openHappyPlacePopup()">Make New Happy Place</button>
+</div>
 <div class="map">
   <leaflet width="100%" height="80vh" center="center" markers="markers" layers="layers" event-broadcast="events"></leaflet>
 </div>
 <div class="footer">Twitter and stuff</div>
+
+<div ng-show="clickedhappyplace" class="happyplacepopup">
+  <div class="makehappyplace">
+    <form ng-submit="addNewHappyPlace()">
+    <p>Write a bit about what made you happy here:</p>
+    <input class="happyplacemessage" type="text" ng-model="message" placeholder="why is this a happy place?"><button>Create</button>
+    </form>
+    <button ng-click="closeHappyPlacePopup()">Close</button>
+  </div>
+</div>
