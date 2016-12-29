@@ -120,61 +120,61 @@ app.controller('HappyPlaceHeaderController', function($scope, $state, happyplace
 
 app.controller('HappyPlaceLandingController', function($scope, $state, happyplaceService, $cookies, $rootScope) {
 
-  $scope.markers = [{
-    lat: 33.8486719,
-    lng: -84.3733370,
-    group: 'world',
-    focus: true,
-    message: "ATV: Home of HappyPlace",
-    icon: happyMarker,
-    draggable: false,
-    options: {
-      noHide: true
-    }
-  }];
+  // $scope.markers = [{
+  //   lat: 33.8486719,
+  //   lng: -84.3733370,
+  //   group: 'world',
+  //   focus: true,
+  //   message: "ATV: Home of HappyPlace",
+  //   icon: happyMarker,
+  //   draggable: false,
+  //   options: {
+  //     noHide: true
+  //   }
+  // }];
 
-  angular.extend($scope, {
-    center: {
-      lat: 33.84867194475872,
-      lng: -84.37333703041077,
-      zoom: 12
-    },
-    layers: {
-      baselayers: {
-        // googleTerrain: {
-        //   name: 'Google Terrain',
-        //   layerType: 'TERRAIN',
-        //   type: 'google'
-        // },
-        mapboxStreets: {
-          name: 'Mapbox Streets',
-          url: 'https://api.mapbox.com/styles/v1/mapbox/streets-v10/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoibXdkb3ducyIsImEiOiJjaXd5MXVpZm4wMWZsMnpxcm5vbDVhcHZwIn0.m_HmCvf10RP_go_r3sFroQ',
-          type: 'xyz',
-          layerOptions: {
-            apikey: 'pk.eyJ1IjoibXdkb3ducyIsImEiOiJjaXd5MXVpZm4wMWZsMnpxcm5vbDVhcHZwIn0.m_HmCvf10RP_go_r3sFroQ',
-            mapid: 'mwdowns'
-          }
-        },
-        osm: {
-          name: 'OpenStreetMap',
-          url: 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-          type: 'xyz'
-        }
-      }
-    },
-    // markers: {
-    //   mainMarker: angular.copy(mainMarker)
-    // },
-    defaults: {
-      scrollWheelZoom: false
-    },
-    events: {
-      map: {
-        enable: ['click', 'mousemove'],
-        logic: 'emit'
-      }
-    }
-  });
+  // angular.extend($scope, {
+  //   center: {
+  //     lat: 33.84867194475872,
+  //     lng: -84.37333703041077,
+  //     zoom: 12
+  //   },
+  //   layers: {
+  //     baselayers: {
+  //       // googleTerrain: {
+  //       //   name: 'Google Terrain',
+  //       //   layerType: 'TERRAIN',
+  //       //   type: 'google'
+  //       // },
+  //       mapboxStreets: {
+  //         name: 'Mapbox Streets',
+  //         url: 'https://api.mapbox.com/styles/v1/mapbox/streets-v10/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoibXdkb3ducyIsImEiOiJjaXd5MXVpZm4wMWZsMnpxcm5vbDVhcHZwIn0.m_HmCvf10RP_go_r3sFroQ',
+  //         type: 'xyz',
+  //         layerOptions: {
+  //           apikey: 'pk.eyJ1IjoibXdkb3ducyIsImEiOiJjaXd5MXVpZm4wMWZsMnpxcm5vbDVhcHZwIn0.m_HmCvf10RP_go_r3sFroQ',
+  //           mapid: 'mwdowns'
+  //         }
+  //       },
+  //       osm: {
+  //         name: 'OpenStreetMap',
+  //         url: 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+  //         type: 'xyz'
+  //       }
+  //     }
+  //   },
+  //   // markers: {
+  //   //   mainMarker: angular.copy(mainMarker)
+  //   // },
+  //   defaults: {
+  //     scrollWheelZoom: false
+  //   },
+  //   events: {
+  //     map: {
+  //       enable: ['click', 'mousemove'],
+  //       logic: 'emit'
+  //     }
+  //   }
+  // });
 
   $scope.signupSubmit = function() {
     if ($scope.password != $scope.confirmPassword) {
@@ -212,7 +212,7 @@ app.controller('HappyPlaceLandingController', function($scope, $state, happyplac
     happyplaceService.login(formData)
       .then(function() {
         if($cookies.getObject('cookie_data')) {
-          $state.go('myhappyplaces', {username: formData.username});
+          $state.go('myhappyplaces');
           $rootScope.loggedin = true;
         }
         else {
@@ -240,21 +240,22 @@ app.controller('HappyPlaceLandingController', function($scope, $state, happyplac
 
 });
 
-app.controller("MyHappyPlacesMapController", function($scope, $state, happyplaceService, $cookies, $rootScope) {
+app.controller("MyHappyPlacesMapController", function($scope, $state, $timeout, happyplaceService, $cookies, $rootScope) {
 
   var cookie = $cookies.getObject('cookie_data');
   if (cookie) {
     console.log('there is a cookie');
     $rootScope.username = cookie.username;
     $rootScope.loggedin = true;
+
   }
   else {
     console.log('there is no cookie');
     $rootScope.needtologin = true;
     $state.go('happyplace');
   }
-  $scope.username = cookie.username;
-  console.log($scope.username);
+  // $scope.username = cookie.username;
+  // console.log($scope.username);
 
   $scope.markers = [{
     lat: 33.8486719,
@@ -277,11 +278,6 @@ app.controller("MyHappyPlacesMapController", function($scope, $state, happyplace
     },
     layers: {
       baselayers: {
-        // googleTerrain: {
-        //   name: 'Google Terrain',
-        //   layerType: 'TERRAIN',
-        //   type: 'google'
-        // },
         mapboxStreets: {
           name: 'Mapbox Streets',
           url: 'https://api.mapbox.com/styles/v1/mapbox/streets-v10/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoibXdkb3ducyIsImEiOiJjaXd5MXVpZm4wMWZsMnpxcm5vbDVhcHZwIn0.m_HmCvf10RP_go_r3sFroQ',
@@ -298,18 +294,24 @@ app.controller("MyHappyPlacesMapController", function($scope, $state, happyplace
         }
       }
     },
-    // markers: {
-    //   mainMarker: angular.copy(mainMarker)
-    // },
     defaults: {
       scrollWheelZoom: false
     },
     events: {
       map: {
-        enable: ['click', 'mousemove'],
+        enable: ['click', 'mousemove', 'load', 'locationfound'],
         logic: 'emit'
       }
     }
+  });
+
+  $scope.$on('leafletDirectiveMap.load', function(event, args){
+    console.log('this is the load event, ' , event);
+    console.log('these are the args, ', args);
+  });
+
+  $scope.$on('leafletDirectiveMap.locationfound', function(event) {
+    console.log('this is the location found event, ' , event);
   });
 
   happyplaceService.getMyHappyPlaces($scope.username)
@@ -331,6 +333,7 @@ app.controller("MyHappyPlacesMapController", function($scope, $state, happyplace
       // console.log('this got happyplaces,', gothappyplace);
       $scope.markers.push(gothappyplace);
     }
+    console.log('this is scope.markers, ', $scope.markers);
   })
   .catch(function(err) {
     console.log('there was an error getting happyplaces', err);
