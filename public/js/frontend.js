@@ -59,6 +59,7 @@ app.factory('happyplaceService', function($http, $cookies, $rootScope, $state) {
     $cookies.remove('cookie_data');
     $rootScope.auth_token = null;
     $rootScope.username = '';
+    $rootScope.needtologin = false;
     $rootScope.loggedin = false;
     $rootScope.loggingin = false;
     $rootScope.clickedLogin = false;
@@ -160,6 +161,33 @@ app.controller('HappyPlaceHeaderController', function($scope, $state, happyplace
 });
 
 app.controller('HappyPlaceLandingController', function($scope, $state, happyplaceService, $cookies, $rootScope) {
+
+  $scope.markers = [{
+    lat: 33.8486719,
+    lng: -84.3733370,
+    group: 'world',
+    focus: true,
+    message: "ATV: Home of HappyPlace",
+    icon: happyMarker,
+    draggable: false,
+    options: {
+      noHide: true
+    }
+  }];
+
+  var cookie = $cookies.getObject('cookie_data');
+  if (cookie) {
+    console.log('there is a cookie');
+    console.log('these are the markers', $scope.markers);
+    console.log('these are the markers in the cookie, ', cookie.happyplaces);
+    $rootScope.username = cookie.username;
+    $rootScope.loggedin = true;
+    $state.go('myhappyplaces');
+  }
+  else {
+    console.log('there is no cookie');
+    $state.go('happyplace');
+  }
 
   // $scope.markers = [{
   //   lat: 33.8486719,
@@ -345,10 +373,11 @@ app.controller('ProfileController', function($scope, $state, happyplaceService, 
 
 app.controller("MyHappyPlacesMapController", function($scope, $state, happyplaceService, $cookies, $rootScope) {
 
-  var mapboxUrl = 'https://api.mapbox.com/styles/v1/mapbox/streets-v10/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoibXdkb3ducyIsImEiOiJjaXd5MXVpZm4wMWZsMnpxcm5vbDVhcHZwIn0.m_HmCvf10RP_go_r3sFroQ';
+  var mapboxUrl = 'https://api.mapbox.com/styles/v1/mapbox/streets-v10/tiles/256/{z}/{x}/{y}?access_token={apikey}';
+  // var mapboxUrl = 'https://api.mapbox.com/v4/mapbox.streets-basic.html?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpbTgzcHQxMzAxMHp0eWx4bWQ1ZHN2NGcifQ.WVwjmljKYqKciEZIC3NfLA#3/0.00/0.00';
   var mapboxAPIKey = 'pk.eyJ1IjoibXdkb3ducyIsImEiOiJjaXd5MXVpZm4wMWZsMnpxcm5vbDVhcHZwIn0.m_HmCvf10RP_go_r3sFroQ';
   var mapboxUser = 'mwdowns';
-  var osmUrl = 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+  var osmUrl = 'http://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png';
 
   var cookie = $cookies.getObject('cookie_data');
   if (cookie) {
@@ -363,8 +392,6 @@ app.controller("MyHappyPlacesMapController", function($scope, $state, happyplace
     $rootScope.needtologin = true;
     $state.go('happyplace');
   }
-  // $scope.username = cookie.username;
-  // console.log($scope.username);
 
   $scope.markers = [{
     lat: 33.8486719,
@@ -378,8 +405,6 @@ app.controller("MyHappyPlacesMapController", function($scope, $state, happyplace
       noHide: true
     }
   }];
-
-  console.log('this is the rootscope username, ', $rootScope.username);
 
   happyplaceService.getMyHappyPlaces($rootScope.username)
   .then(function(happyplaces) {
@@ -405,6 +430,44 @@ app.controller("MyHappyPlacesMapController", function($scope, $state, happyplace
     console.log('there was an error getting happyplaces', err);
   });
 
+  var renderMap = function() {
+    angular.extend($scope, {
+      center: {
+        lat: 33.84867194475872,
+        lng: -84.37333703041077,
+        zoom: 12
+      },
+      layers: {
+        baselayers: {
+          mapboxStreets: {
+            name: 'Mapbox Streets',
+            url: mapboxUrl,
+            type: 'xyz',
+            layerOptions: {
+              apikey: mapboxAPIKey,
+              mapid: mapboxUser
+            }
+          },
+          osm: {
+            name: 'OpenStreetMap',
+            url: osmUrl,
+            type: 'xyz'
+          }
+        }
+      },
+      // markers: $rootScope.markers,
+      defaults: {
+        scrollWheelZoom: false
+      },
+      events: {
+        map: {
+          enable: ['click', 'mousemove', 'load', 'locationfound'],
+          logic: 'emit'
+        }
+      }
+    });
+  };
+
   angular.extend($scope, {
     center: {
       lat: 33.84867194475872,
@@ -413,11 +476,6 @@ app.controller("MyHappyPlacesMapController", function($scope, $state, happyplace
     },
     layers: {
       baselayers: {
-        // googleTerrain: {
-        //   name: 'Google Terrain',
-        //   layerType: 'TERRAIN',
-        //   type: 'google'
-        // },
         mapboxStreets: {
           name: 'Mapbox Streets',
           url: mapboxUrl,

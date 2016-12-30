@@ -37,7 +37,7 @@ app.post('/signup', function(req, res) {
   var user = req.body.username;
   var password = req.body.password;
   var email = req.body.email;
-  console.log(user, password, email);
+  // console.log(user, password, email);
   bcrypt.hash(password, salt)
     .then(function(hash) {
       User.create ({
@@ -58,7 +58,7 @@ app.post('/signup', function(req, res) {
 app.post('/login', function(req, res) {
   var user = req.body.username;
   var password = req.body.password;
-  console.log(user, password);
+  // console.log(user, password);
   User.findById(user)
   .then(function(data) {
     console.log(data.password);
@@ -68,7 +68,7 @@ app.post('/login', function(req, res) {
   .spread(function(data, newHash) {
     var token = uuid();
     if (newHash) {
-      console.log('this is the token in the if, ', token);
+      // console.log('this is the token in the if, ', token);
       User.update(
         {_id: data._id},
         {
@@ -83,7 +83,7 @@ app.post('/login', function(req, res) {
       .catch(function(err) {
         res.json({message: 'error', err: err});
       });
-      console.log('this is the token outside, ', token);
+      // console.log('this is the token outside, ', token);
       res.json({message: 'success', username: data._id, happyplaces: data.happyplaces, token: token});
     }
     else {
@@ -91,7 +91,7 @@ app.post('/login', function(req, res) {
     }
   })
   .catch(function(err) {
-    console.log(err);
+    // console.log(err);
     res.status(401);
     res.json({message: 'you got an error:', err: err.message});
   });
@@ -100,7 +100,7 @@ app.post('/login', function(req, res) {
 app.get('/profile/:username', function(req, res) {
   // User Profile page
   var username = req.params.username;
-  console.log('this is the username on the /profile/:username page, ', username);
+  // console.log('this is the username on the /profile/:username page, ', username);
   bluebird.all([
     User.findById(username),
     Happyplace.find({userID: username})
@@ -119,8 +119,8 @@ app.get('/profile/:username', function(req, res) {
 
 app.get('/myhappyplaces/:username', function(req, res) {
   var username = req.params.username;
-  console.log('the username is below');
-  console.log(username);
+  // console.log('the username is below');
+  // console.log(username);
   Happyplace.find({userID: username})
   .then(function(data) {
     res.json(data);
@@ -131,7 +131,7 @@ app.get('/myhappyplaces/:username', function(req, res) {
 });
 
 app.post('/createhappyplace', function(req, res) {
-  console.log(req.body);
+  // console.log(req.body);
   var lat = req.body.coords.lat;
   var lng = req.body.coords.lng;
   var message = req.body.message;
