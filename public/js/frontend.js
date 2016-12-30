@@ -1,7 +1,9 @@
 //I editted the angular.js file on line 13920, adding a return and commenting out the following line. It turns off the constant console logging on the map.
 
+//Creates an angular module called 'happyplace' and uses 'ui-router', 'ngCookies', and 'leaflet-directive' modules
 var app = angular.module('happyplace', ['ui.router', 'ngCookies', 'leaflet-directive']);
 
+//The happyplace marker icon.
 var happyMarker = {
   iconUrl: "img/happyplace6.png",
   shadowUrl: "img/markers_shadow.png",
@@ -12,26 +14,31 @@ var happyMarker = {
   shadowSize: [36, 16],
 };
 
+//these are the states for the app
 app.config(function($stateProvider, $urlRouterProvider) {
   $stateProvider
+    //This is the inital page you get when you go to happyplace.click
     .state({
       name: 'happyplace',
       url: '/',
       templateUrl: 'landing.html',
       controller: 'HappyPlaceLandingController'
     })
+    //Profile state for when a user wants to edit their profile info or edit or remove their happyplaces
     .state({
       name: 'profile',
       url: '/profile',
       templateUrl: 'profile.html',
       controller: 'ProfileController'
     })
+    //State for showing all of a user's happyplaces on a map
     .state({
       name: 'myhappyplaces',
       url: '/myhappyplaces',
       templateUrl: 'myhappyplaces.html',
       controller: 'MyHappyPlacesMapController'
     })
+    //State for showing all of the happyplaces near a user's location
     .state({
       name: 'worldhappyplaces',
       url: '/worldhappyplaces',
@@ -42,9 +49,11 @@ app.config(function($stateProvider, $urlRouterProvider) {
   $urlRouterProvider.otherwise('/');
 });
 
+//The app factory for all of the services. It's called happyplaceService.
 app.factory('happyplaceService', function($http, $cookies, $rootScope, $state) {
   var service = {};
 
+  //Use of the rootScope for the logout lets you initiallize all of the various settings across all of the controllers. Delete's the cookies as well.
   $rootScope.logout = function() {
     console.log('clicked logout');
     $cookies.remove('cookie_data');
@@ -57,6 +66,7 @@ app.factory('happyplaceService', function($http, $cookies, $rootScope, $state) {
     $state.go('happyplace');
   };
 
+  //The basic login. Makes a call to the backend to find the user and check the password against the one stored in the database. It's sending it unencrypted, which is a problem, so I should look into getting bcrypt working on the frontend. Is that feesible? Once we get a response from the backend, we set a cookie with the username, happyplaces, and token;
   service.login = function(formData) {
     var userinfo = {
       username: formData.username,
@@ -76,11 +86,12 @@ app.factory('happyplaceService', function($http, $cookies, $rootScope, $state) {
       $rootScope.auth_token = data.token;
     })
     .catch(function(err) {
-      console.log('this sucks');
+      console.log('login failed because ', err);
       $rootScope.wronglogin = true;
     });
   };
 
+  //Basic signup. Takes the user information from the form on the page, sends it to the backend to put in the database. Should get a then and catch part so that I can log an error for when the user picks a username already in use (the username is the id in the database and therefore unique).
   service.signup = function(formData) {
     var newuser = {
       username: formData.username,
@@ -90,14 +101,17 @@ app.factory('happyplaceService', function($http, $cookies, $rootScope, $state) {
     return $http.post('/signup', newuser);
   };
 
+  //Get's an array of objects of the user's happyplaces. This is used to update the markers list in the controller.
   service.getMyHappyPlaces = function(username) {
     return $http.get('/myhappyplaces/' + username);
   };
 
+  //This returns a an object containing the user info (like username, email, password) and happyplaces so that the user can edit or delete their account or edit and delete happyplaces.
   service.getMyProfileInfo = function(username) {
     return $http.get('/profile/' + username);
   };
 
+  //Adds a happyplce taking latitude and longitude and message for a marker. Will need to add the option of adding a picture later.
   service.addHappyPlace = function(lat, lng, msg) {
     var newHappyPlace = {
       coords: {
@@ -110,8 +124,7 @@ app.factory('happyplaceService', function($http, $cookies, $rootScope, $state) {
     return $http.post('/createhappyplace', newHappyPlace);
   };
 
-
-
+  //Allows the user to edit a message for a happylace.
   service.editMessage = function(id, message) {
     var editData = {
       id: id,
@@ -120,6 +133,7 @@ app.factory('happyplaceService', function($http, $cookies, $rootScope, $state) {
     return $http.post('/editmessage', editData);
   };
 
+  //Allows the user to remove a happyplace.
   service.removeHappyPlace = function(id) {
     var removeData = {
       id: id
