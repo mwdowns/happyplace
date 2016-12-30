@@ -25,7 +25,7 @@
         <input class="password" ng-model="password" type="password" name="password" size="25">
       </div>
       <button type="submit">Submit</button>
-    <p ng-show="loginerror" class="error">There was a problem logining in!</p>
+    <p ng-show="wronglogin" class="error">There was a problem logining in! Either wrong name or password.</p>
     </form>
   </div>
   <button class="closebutton" ng-click="closeHappyPlacePopup()">Close</button>

@@ -1,0 +1,27 @@
+profile
+
+{{username}}
+{{data.username}}
+{{data.email}}
+
+<div class="happyplacelistContainer">
+  <div ng-repeat="happyplace in data.happyplaces" class="happyplacelist">
+    <p>{{happyplace.date}}</p>
+    <p>{{happyplace.coords.lat}}</p>
+    <p>{{happyplace.coords.lng}}</p><br>
+    <p>{{happyplace.message}}</p><br>
+    <button ng-click="editHappyPlace(happyplace._id, happyplace.message)">Edit</button>
+  </div>
+</div>
+
+<div ng-show="editingHappyPlace" class="happyplacepopup">
+  <div class="makehappyplace">
+    <form ng-submit="changeMessage()">
+    <p>Write a bit about what made you happy here:</p>
+    <textarea class="happyplacemessage" type="text" rows="4" cols="25" ng-model="newMessage" maxlength="320">Why is nothing showing up here</textarea>
+    <p ng-show="messageerror" class="error">You must enter a message!</p><button>Edit Message</button>
+    </form>
+    <button ng-click="deleteHappyPlace()">Remove this HappyPlace</button>
+  </div>
+  <button class="closebutton" ng-click="closeHappyPlacePopup()">Close</button>
+</div>

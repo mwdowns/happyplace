@@ -21,6 +21,12 @@ app.config(function($stateProvider, $urlRouterProvider) {
       controller: 'HappyPlaceLandingController'
     })
     .state({
+      name: 'profile',
+      url: '/profile',
+      templateUrl: 'profile.html',
+      controller: 'ProfileController'
+    })
+    .state({
       name: 'myhappyplaces',
       url: '/myhappyplaces',
       templateUrl: 'myhappyplaces.html',
@@ -49,22 +55,6 @@ app.factory('happyplaceService', function($http, $cookies, $rootScope, $state) {
     $rootScope.clickedLogin = false;
     $rootScope.clickedSignup = false;
     $state.go('happyplace');
-  };
-
-  service.getMyHappyPlaces = function(username) {
-    return $http.get('/myhappyplaces/' + username);
-  };
-
-  service.addHappyPlace = function(lat, lng, msg) {
-    var newHappyPlace = {
-      coords: {
-        lat: lat,
-        lng: lng
-      },
-      message: msg,
-      username: $rootScope.username
-    };
-    return $http.post('/createhappyplace', newHappyPlace);
   };
 
   service.login = function(formData) {
@@ -98,6 +88,43 @@ app.factory('happyplaceService', function($http, $cookies, $rootScope, $state) {
       email: formData.email
     };
     return $http.post('/signup', newuser);
+  };
+
+  service.getMyHappyPlaces = function(username) {
+    return $http.get('/myhappyplaces/' + username);
+  };
+
+  service.getMyProfileInfo = function(username) {
+    return $http.get('/profile/' + username);
+  };
+
+  service.addHappyPlace = function(lat, lng, msg) {
+    var newHappyPlace = {
+      coords: {
+        lat: lat,
+        lng: lng
+      },
+      message: msg,
+      username: $rootScope.username
+    };
+    return $http.post('/createhappyplace', newHappyPlace);
+  };
+
+
+
+  service.editMessage = function(id, message) {
+    var editData = {
+      id: id,
+      message: message
+    };
+    return $http.post('/editmessage', editData);
+  };
+
+  service.removeHappyPlace = function(id) {
+    var removeData = {
+      id: id
+    };
+    return $http.post('/remove', removeData);
   };
 
   return service;
@@ -212,7 +239,7 @@ app.controller('HappyPlaceLandingController', function($scope, $state, happyplac
     happyplaceService.login(formData)
       .then(function() {
         if($cookies.getObject('cookie_data')) {
-          $state.go('myhappyplaces');
+          $state.go('myhappyplaces', {username: formData.username});
           $rootScope.loggedin = true;
         }
         else {
@@ -240,14 +267,82 @@ app.controller('HappyPlaceLandingController', function($scope, $state, happyplac
 
 });
 
-app.controller("MyHappyPlacesMapController", function($scope, $state, $timeout, happyplaceService, $cookies, $rootScope) {
+app.controller('ProfileController', function($scope, $state, happyplaceService, $cookies, $rootScope) {
+
+  var cookie = $cookies.getObject('cookie_data');
+  if (cookie) {
+    $rootScope.username = cookie.username;
+    $rootScope.loggedin = true;
+    happyplaceService.getMyProfileInfo($rootScope.username)
+    .then(function(info) {
+      console.log('this is the info, ', info);
+      $scope.data = info.data;
+    })
+    .catch(function(err) {
+      console.log('you got an error', err);
+    });
+
+    $scope.editHappyPlace = function(id, message) {
+      $scope.happyplaceID = id;
+      $scope.oldMessage = message;
+      $scope.editingHappyPlace = true;
+      console.log($scope.happyplaceID, $scope.oldMessage);
+
+      $scope.changeMessage = function() {
+        if ($scope.newMessage) {
+          happyplaceService.editMessage($scope.happyplaceID, $scope.newMessage)
+          .then(function(data) {
+            console.log('you updated the message', data);
+            $scope.editingHappyPlace = false;
+
+          })
+          .catch(function(err) {
+            console.log('you got an error, ', err);
+          });
+        }
+        else {
+          $scope.messageerror = true;
+        }
+        $state.go('profile');
+      };
+
+      $scope.deleteHappyPlace = function() {
+        console.log($scope.happyplaceID);
+        happyplaceService.removeHappyPlace($scope.happyplaceID)
+        .then(function(data) {
+          console.log('you deleted this Happy Place', data);
+          $scope.editingHappyPlace = false;
+          $state.go('profile');
+        })
+        .catch(function(err) {
+          console.log('you got an error, ', err);
+        });
+      };
+    };
+
+    $scope.closeHappyPlacePopup = function() {
+      console.log('clicked closepopup');
+      $scope.editingHappyPlace = false;
+    };
+
+
+  }
+});
+
+app.controller("MyHappyPlacesMapController", function($scope, $state, happyplaceService, $cookies, $rootScope) {
+
+  var mapboxUrl = 'https://api.mapbox.com/styles/v1/mapbox/streets-v10/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoibXdkb3ducyIsImEiOiJjaXd5MXVpZm4wMWZsMnpxcm5vbDVhcHZwIn0.m_HmCvf10RP_go_r3sFroQ';
+  var mapboxAPIKey = 'pk.eyJ1IjoibXdkb3ducyIsImEiOiJjaXd5MXVpZm4wMWZsMnpxcm5vbDVhcHZwIn0.m_HmCvf10RP_go_r3sFroQ';
+  var mapboxUser = 'mwdowns';
+  var osmUrl = 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
 
   var cookie = $cookies.getObject('cookie_data');
   if (cookie) {
     console.log('there is a cookie');
+    console.log('these are the markers', $scope.markers);
+    console.log('these are the markers in the cookie, ', cookie.happyplaces);
     $rootScope.username = cookie.username;
     $rootScope.loggedin = true;
-
   }
   else {
     console.log('there is no cookie');
@@ -270,51 +365,9 @@ app.controller("MyHappyPlacesMapController", function($scope, $state, $timeout, 
     }
   }];
 
-  angular.extend($scope, {
-    center: {
-      lat: 33.84867194475872,
-      lng: -84.37333703041077,
-      zoom: 12
-    },
-    layers: {
-      baselayers: {
-        mapboxStreets: {
-          name: 'Mapbox Streets',
-          url: 'https://api.mapbox.com/styles/v1/mapbox/streets-v10/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoibXdkb3ducyIsImEiOiJjaXd5MXVpZm4wMWZsMnpxcm5vbDVhcHZwIn0.m_HmCvf10RP_go_r3sFroQ',
-          type: 'xyz',
-          layerOptions: {
-            apikey: 'pk.eyJ1IjoibXdkb3ducyIsImEiOiJjaXd5MXVpZm4wMWZsMnpxcm5vbDVhcHZwIn0.m_HmCvf10RP_go_r3sFroQ',
-            mapid: 'mwdowns'
-          }
-        },
-        osm: {
-          name: 'OpenStreetMap',
-          url: 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-          type: 'xyz'
-        }
-      }
-    },
-    defaults: {
-      scrollWheelZoom: false
-    },
-    events: {
-      map: {
-        enable: ['click', 'mousemove', 'load', 'locationfound'],
-        logic: 'emit'
-      }
-    }
-  });
+  console.log('this is the rootscope username, ', $rootScope.username);
 
-  $scope.$on('leafletDirectiveMap.load', function(event, args){
-    console.log('this is the load event, ' , event);
-    console.log('these are the args, ', args);
-  });
-
-  $scope.$on('leafletDirectiveMap.locationfound', function(event) {
-    console.log('this is the location found event, ' , event);
-  });
-
-  happyplaceService.getMyHappyPlaces($scope.username)
+  happyplaceService.getMyHappyPlaces($rootScope.username)
   .then(function(happyplaces) {
     // console.log('these are the happyplaces from the database', happyplaces.data);
     for (var i = 0; i < happyplaces.data.length; i++) {
@@ -333,10 +386,59 @@ app.controller("MyHappyPlacesMapController", function($scope, $state, $timeout, 
       // console.log('this got happyplaces,', gothappyplace);
       $scope.markers.push(gothappyplace);
     }
-    console.log('this is scope.markers, ', $scope.markers);
   })
   .catch(function(err) {
     console.log('there was an error getting happyplaces', err);
+  });
+
+  angular.extend($scope, {
+    center: {
+      lat: 33.84867194475872,
+      lng: -84.37333703041077,
+      zoom: 12
+    },
+    layers: {
+      baselayers: {
+        // googleTerrain: {
+        //   name: 'Google Terrain',
+        //   layerType: 'TERRAIN',
+        //   type: 'google'
+        // },
+        mapboxStreets: {
+          name: 'Mapbox Streets',
+          url: mapboxUrl,
+          type: 'xyz',
+          layerOptions: {
+            apikey: mapboxAPIKey,
+            mapid: mapboxUser
+          }
+        },
+        osm: {
+          name: 'OpenStreetMap',
+          url: osmUrl,
+          type: 'xyz'
+        }
+      }
+    },
+    // markers: $rootScope.markers,
+    defaults: {
+      scrollWheelZoom: false
+    },
+    events: {
+      map: {
+        enable: ['click', 'mousemove', 'load', 'locationfound'],
+        logic: 'emit'
+      }
+    }
+  });
+
+  $scope.$on('leafletDirectiveMap.load', function(event, args){
+    console.log('this is the load event, ' , event);
+    console.log('these are the args, ', args);
+  });
+
+  $scope.$on('leafletDirectiveMap.locationfound', function(event) {
+    console.log('this is the location found event, ' , event);
   });
 
   $scope.addNewHappyPlace = function(message) {

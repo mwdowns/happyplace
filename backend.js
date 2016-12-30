@@ -106,7 +106,11 @@ app.get('/profile/:username', function(req, res) {
     Happyplace.find({userID: username})
   ])
   .spread(function(user, happyplaces) {
-    res.json({username: user._id, email: user.email, happyplaces: happyplaces});
+    var dates = [];
+    for (var i = 0; i < happyplaces.length; i++) {
+      dates.push(happyplaces[i].date.toString());
+    }
+    res.json({username: user._id, email: user.email, password: user.password, happyplaces: happyplaces, dates: dates});
   })
   .catch(function(err) {
     res.json({message: 'you got an error', error: err});
@@ -160,7 +164,37 @@ app.post('/createhappyplace', function(req, res) {
   });
 });
 
+app.post('/editmessage', function(req, res) {
+  var happyPlaceID = req.body.id;
+  var newMessage = req.body.message;
+  Happyplace.update(
+    {_id: happyPlaceID},
+    {
+      $set: {
+        message: newMessage
+      }
+    }
+  )
+  .then(function(data) {
+    res.json({message: 'you updated the document', data: data});
+  })
+  .catch(function(err) {
+    res.json({message: 'you got an error', error: err});
+  });
+});
 
+app.post('/remove', function(req, res) {
+  var happyPlaceID = req.body.id;
+  Happyplace.remove(
+    {_id: happyPlaceID}
+  )
+  .then(function(data) {
+    res.json({message: 'you removed the document', data: data});
+  })
+  .catch(function(err) {
+    res.json({message: 'you got an error', error: err});
+  });
+});
 
 app.listen(8000, function() {
   console.log('listening on port 8000');
