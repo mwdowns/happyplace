@@ -38,16 +38,17 @@
           <button ng-click="clickedLogin()">Login</button> | <button ng-click="clickedSignup()">Signup</button>
         </div>
         <div ng-show="loggedin" class="logout">
-          Hello, {{username}}. Where's your HappyPlace today?<button ng-click="logout()">Logout</button>
+          Hello, {{username}}. Where's your HappyPlace today?<button ng-click="clickedProfile()">Profile</button><button ng-click="logout()">Logout</button>
         </div>
       </div>
-      <div class="happyplacebuttons" ng-show="loggedin">
+      <div ng-hide="visitingProfile"
+      class="happyplacebuttons" ng-show="loggedin">
         <button ng-click="openHappyPlacePopup()">Make New Happy Place <i class="fa fa-smile-o" aria-hidden="true"></i></button>
       </div>
-      <div class="map">
+      <div ng-hide="visitingProfile" class="map">
           <leaflet width="100%" height="80vh" center="center" markers="markers" layers="layers" event-broadcast="events"></leaflet>
       </div>
-      <div class="footer">Twitter and stuff</div>
+      <div ng-hide="visitingProfile" class="footer">Twitter and stuff</div>
     </div>
     <ui-view class="uiview"></ui-view>
   </body>

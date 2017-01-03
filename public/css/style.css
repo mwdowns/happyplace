@@ -10,11 +10,18 @@ body {
   display: inline-block;
   width: 100%;
   height: 6vh;
-  margin-top: 10px;
+  margin: 10px 0 0 5px;
 }
 
 .header p {
   margin: 0;
+  float: left;
+}
+
+.logout {
+  margin: 0 10px 0 0;
+  float: right;
+  text-align: right;
 }
 
 .map {
@@ -23,7 +30,7 @@ body {
 }
 
 .happyplacebuttons {
-  margin: 5px 0;
+  margin: 0 0 5px 0;
   text-align: center;
 }
 
@@ -69,13 +76,16 @@ body {
 }
 
 .happyplacelist {
-  height: 150px;
+  height: 200px;
   width: 200px;
   border-radius: 10px;
   background-color: green;
   color: white;
   margin: 5px;
   padding: 5px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
 .happyplacelist p {

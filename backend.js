@@ -27,10 +27,20 @@ const Happyplace = mongoose.model('Happyplace', {
     lat: Number,
     lng: Number
   },
-  date: Date,
+  date: String,
   message: {type: String, minlength: 1, maxlength: 560},
   image: Buffer,
   userID: [String]
+});
+
+app.get('/getworldhappyplaces', function(req, res) {
+  Happyplace.find()
+  .then(function(data) {
+    res.json({data: data});
+  })
+  .catch(function(err) {
+    res.json({message: 'you got an error', error: err});
+  });
 });
 
 app.post('/signup', function(req, res) {
@@ -106,11 +116,7 @@ app.get('/profile/:username', function(req, res) {
     Happyplace.find({userID: username})
   ])
   .spread(function(user, happyplaces) {
-    var dates = [];
-    for (var i = 0; i < happyplaces.length; i++) {
-      dates.push(happyplaces[i].date.toString());
-    }
-    res.json({username: user._id, email: user.email, password: user.password, happyplaces: happyplaces, dates: dates});
+    res.json({username: user._id, email: user.email, password: user.password, happyplaces: happyplaces});
   })
   .catch(function(err) {
     res.json({message: 'you got an error', error: err});

@@ -64,6 +64,7 @@ app.factory('happyplaceService', function($http, $cookies, $rootScope, $state) {
     $rootScope.loggingin = false;
     $rootScope.clickedLogin = false;
     $rootScope.clickedSignup = false;
+    $rootScope.visitingProfile = false;
     $rootScope.markers = [{
       lat: 33.8486719,
       lng: -84.3733370,
@@ -76,7 +77,12 @@ app.factory('happyplaceService', function($http, $cookies, $rootScope, $state) {
         noHide: true
       }
     }];
+    console.log('just before state.go');
     $state.go('happyplace');
+  };
+
+  service.getworldhappyplaces = function() {
+    return $http.get('/getworldhappyplaces');
   };
 
   //The basic login. Makes a call to the backend to find the user and check the password against the one stored in the database. It's sending it unencrypted, which is a problem, so I should look into getting bcrypt working on the frontend. Is that feesible? Once we get a response from the backend, we set a cookie with the username, happyplaces, and token;
@@ -154,6 +160,8 @@ app.factory('happyplaceService', function($http, $cookies, $rootScope, $state) {
     return $http.post('/remove', removeData);
   };
 
+
+
   return service;
 });
 
@@ -170,9 +178,15 @@ app.controller('HappyPlaceHeaderController', function($scope, $state, happyplace
     $rootScope.clickedSignup = true;
   };
 
+  $scope.clickedProfile = function() {
+    console.log('clicked profile');
+    $rootScope.visitingProfile = true;
+    $state.go('profile');
+  };
+
   $scope.openHappyPlacePopup = function() {
     $rootScope.clickedhappyplace = true;
-    console.log('clicked makenewhappyplace');
+    console.log('clicked makenewhappyplace', $rootScope.clickedhappyplace);
   };
 
   $scope.closeHappyPlacePopup = function() {
@@ -185,6 +199,12 @@ app.controller('HappyPlaceHeaderController', function($scope, $state, happyplace
     $scope.center.lng = args.leafletEvent.latlng.lng;
     $rootScope.clickedLat = args.leafletEvent.latlng.lat;
     $rootScope.clickedLng = args.leafletEvent.latlng.lng;
+  });
+
+  $scope.$on('leafletDirectiveMap.popupopen', function(e) {
+    // var something = e.popup._source;
+    console.log('clicked marker');
+    // console.log(something);
   });
 
   $rootScope.markers = [{
@@ -210,7 +230,7 @@ app.controller('HappyPlaceHeaderController', function($scope, $state, happyplace
     center: {
       lat: 33.84867194475872,
       lng: -84.37333703041077,
-      zoom: 10
+      zoom: 12
     },
     layers: {
       baselayers: {
@@ -230,13 +250,12 @@ app.controller('HappyPlaceHeaderController', function($scope, $state, happyplace
         }
       }
     },
-    // markers: $rootScope.markers,
     defaults: {
       scrollWheelZoom: false
     },
     events: {
       map: {
-        enable: ['click', 'mousemove', 'load', 'locationfound'],
+        enable: ['click', 'mousemove', 'load', 'popupopen'],
         logic: 'emit'
       }
     }
@@ -257,9 +276,8 @@ function findPosition(data) {
   console.log('maybe i can use the coords here');
   $scope.center.lat = data.coords.latitude;
   $scope.center.lng = data.coords.longitude;
-  $scope.center.zoom = 16;
+  $scope.center.zoom = 14;
 }
-
 
 });
 
@@ -278,6 +296,30 @@ app.controller('HappyPlaceLandingController', function($scope, $state, happyplac
   else {
     console.log('there is no cookie');
   }
+
+  happyplaceService.getworldhappyplaces()
+  .then(function(worldhappyplaces) {
+    for (var i = 0; i < worldhappyplaces.data.data.length; i++) {
+      var gothappyplace = {
+        lat: worldhappyplaces.data.data[i].coords.lat,
+        lng: worldhappyplaces.data.data[i].coords.lng,
+        group: 'world',
+        focus: true,
+        message: worldhappyplaces.data.data[i].message,
+        icon: happyMarker,
+        draggable: false,
+        options: {
+          noHide: true
+        }
+      };
+      // console.log('this got happyplaces,', gothappyplace);
+      $rootScope.markers.push(gothappyplace);
+    }
+    console.log($rootScope.markers);
+  })
+  .catch(function(err) {
+    console.log('there was an error getting happyplaces', err);
+  });
 
   $scope.signupSubmit = function() {
     if ($scope.password != $scope.confirmPassword) {
@@ -316,6 +358,18 @@ app.controller('HappyPlaceLandingController', function($scope, $state, happyplac
     happyplaceService.login(formData)
       .then(function() {
         if($cookies.getObject('cookie_data')) {
+          $rootScope.markers = [{
+            lat: 33.8486719,
+            lng: -84.3733370,
+            group: 'world',
+            focus: true,
+            message: "ATV: Home of HappyPlace",
+            icon: happyMarker,
+            draggable: false,
+            options: {
+              noHide: true
+            }
+          }];
           $state.go('myhappyplaces', {username: formData.username});
           $rootScope.loggedin = true;
         }
@@ -348,6 +402,8 @@ app.controller('ProfileController', function($scope, $state, happyplaceService, 
 
   var cookie = $cookies.getObject('cookie_data');
   if (cookie) {
+    $rootScope.visitingProfile = true;
+    console.log('on profile page', $rootScope.visitingProfile);
     $rootScope.username = cookie.username;
     $rootScope.loggedin = true;
     happyplaceService.getMyProfileInfo($rootScope.username)
@@ -395,6 +451,24 @@ app.controller('ProfileController', function($scope, $state, happyplaceService, 
           console.log('you got an error, ', err);
         });
       };
+    };
+
+    $scope.backToHappyPlaces = function() {
+      console.log('clicked backtohappyplaces');
+      $rootScope.visitingProfile = false;
+      $rootScope.markers = [{
+        lat: 33.8486719,
+        lng: -84.3733370,
+        group: 'world',
+        focus: true,
+        message: "ATV: Home of HappyPlace",
+        icon: happyMarker,
+        draggable: false,
+        options: {
+          noHide: true
+        }
+      }];
+      $state.go('myhappyplaces');
     };
 
     $scope.closeHappyPlacePopup = function() {
@@ -451,7 +525,7 @@ app.controller("MyHappyPlacesMapController", function($scope, $state, happyplace
   $scope.addNewHappyPlace = function(message) {
     if($scope.message) {
       $scope.messageerror = false;
-      $scope.clickedhappyplace = false;
+      // $scope.clickedhappyplace = false;
       var createdHappyPlace = {
         lat: $rootScope.clickedLat,
         lng: $rootScope.clickedLng,
@@ -468,6 +542,8 @@ app.controller("MyHappyPlacesMapController", function($scope, $state, happyplace
       happyplaceService.addHappyPlace($rootScope.clickedLat, $rootScope.clickedLng, $scope.message)
       .then(function(data) {
         console.log('success!', data);
+        $rootScope.clickedhappyplace = false;
+        $scope.message = '';
       })
       .error(function(err) {
         console.log('you got an error, ', err);
