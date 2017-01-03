@@ -210,7 +210,7 @@ app.controller('HappyPlaceHeaderController', function($scope, $state, happyplace
     center: {
       lat: 33.84867194475872,
       lng: -84.37333703041077,
-      zoom: 12
+      zoom: 10
     },
     layers: {
       baselayers: {
@@ -241,6 +241,25 @@ app.controller('HappyPlaceHeaderController', function($scope, $state, happyplace
       }
     }
   });
+
+
+if (navigator.geolocation) {
+  console.log('uses geolocation');
+  navigator.geolocation.getCurrentPosition(findPosition);
+  console.log('maybe i can set the coords now');
+}
+else {
+  console.log('Geolocation is not supported by this browser.');
+}
+
+function findPosition(data) {
+  console.log(data.coords.latitude, data.coords.longitude);
+  console.log('maybe i can use the coords here');
+  $scope.center.lat = data.coords.latitude;
+  $scope.center.lng = data.coords.longitude;
+  $scope.center.zoom = 16;
+}
+
 
 });
 
