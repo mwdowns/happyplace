@@ -38,6 +38,8 @@ body {
 
 .loginsignup {
   /*border: 5px solid black;*/
+  margin-top: auto;
+  margin-bottom: auto;
   margin-right: 5px;
 }
 
@@ -52,7 +54,7 @@ body {
 
 .map {
   width: 100%;
-  height: 85vh;
+  height: 90vh;
 }
 
 .happyplacebuttons {
@@ -177,7 +179,21 @@ body {
 
 .footer {
   width: 100%;
-  height: 6vh;
-  margin-top: 10px;
+  height: 3%;
+  margin: 0;
   text-align: center;
+  font-size: .7em;
+}
+
+.footer p {
+  margin: 2px 0 0 0;
+}
+
+a:link, a:visited {
+  text-decoration: none;
+  color: inherit;
+}
+
+a:hover {
+  color: inherit;
 }

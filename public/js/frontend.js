@@ -306,7 +306,7 @@ app.controller('HappyPlaceLandingController', function($scope, $state, happyplac
         lng: worldhappyplaces.data.data[i].coords.lng,
         group: 'world',
         focus: true,
-        message: worldhappyplaces.data.data[i].message,
+        message: worldhappyplaces.data.data[i].userID[0] + '<br>' + worldhappyplaces.data.data[i].message,
         icon: happyMarker,
         draggable: false,
         options: {
@@ -531,12 +531,13 @@ app.controller("MyHappyPlacesMapController", function($scope, $state, happyplace
     if($scope.message) {
       $scope.messageerror = false;
       // $scope.clickedhappyplace = false;
+      var markermessage = 'username<br>' + $scope.message;
       var createdHappyPlace = {
         lat: $rootScope.clickedLat,
         lng: $rootScope.clickedLng,
         group: 'world',
         focus: true,
-        message: $scope.message,
+        message: markermessage,
         draggable: false,
         icon: happyMarker,
         options: {
