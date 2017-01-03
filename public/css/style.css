@@ -1,5 +1,8 @@
 body {
   margin: 0;
+  font-family: 'Lato', sans-serif;
+  color: #373d3f;
+  background-color: #ecf166;
 }
 
 .uiview {
@@ -10,28 +13,108 @@ body {
   display: inline-block;
   width: 100%;
   height: 6vh;
-  margin: 10px 0 0 5px;
+  margin: 5px 0px;
+  display: flex;
+  flex-flow: row;
+  justify-content: space-between;
 }
 
-.header p {
+.header .logo p {
+  font-family: 'Dosis', sans-serif;
+  font-size: 2em;
+  font-weight: bold;
+  padding-left: 10px;
   margin: 0;
-  float: left;
+  height: 100%;
+}
+
+/*dark grey text, 5px paddings, lineheight 1.5, */
+
+.logo {
+  /*border: 5px solid red;*/
+  margin-left: 5px;
+  border-radius: 5px;
+}
+
+.loginsignup {
+  /*border: 5px solid black;*/
+  margin-right: 5px;
 }
 
 .logout {
   margin: 0 10px 0 0;
-  float: right;
   text-align: right;
+}
+
+.logout p {
+  margin: 0;
 }
 
 .map {
   width: 100%;
-  height: 80vh;
+  height: 85vh;
 }
 
 .happyplacebuttons {
+  /*width: 100%;*/
   margin: 0 0 5px 0;
   text-align: center;
+}
+
+.makehappyplacebutton {
+  position: fixed;
+  top: 11vh;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.myButton {
+	-moz-box-shadow:inset 0px 1px 0px 0px #f0f2c4;
+	-webkit-box-shadow:inset 0px 1px 0px 0px #f0f2c4;
+	box-shadow:inset 0px 1px 0px 0px #f0f2c4;
+	background:-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #ecf166), color-stop(1, #bce854));
+	background:-moz-linear-gradient(top, #ecf166 5%, #bce854 100%);
+	background:-webkit-linear-gradient(top, #ecf166 5%, #bce854 100%);
+	background:-o-linear-gradient(top, #ecf166 5%, #bce854 100%);
+	background:-ms-linear-gradient(top, #ecf166 5%, #bce854 100%);
+	background:linear-gradient(to bottom, #ecf166 5%, #bce854 100%);
+	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#ecf166', endColorstr='#bce854',GradientType=0);
+	background-color:#ecf166;
+	-moz-border-radius:6px;
+	-webkit-border-radius:6px;
+	border-radius:6px;
+	border:1px solid #5d851d;
+	display:inline-block;
+	cursor:pointer;
+	color:#373d3f;
+	font-family:'Lato', sans-serif;
+	font-size: 1em;
+	padding:6px 24px;
+	text-decoration:none;
+	text-shadow:0px 1px 0px #528009;
+}
+.myButton:hover {
+	background:-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #bce854), color-stop(1, #ecf166));
+	background:-moz-linear-gradient(top, #bce854 5%, #ecf166 100%);
+	background:-webkit-linear-gradient(top, #bce854 5%, #ecf166 100%);
+	background:-o-linear-gradient(top, #bce854 5%, #ecf166 100%);
+	background:-ms-linear-gradient(top, #bce854 5%, #ecf166 100%);
+	background:linear-gradient(to bottom, #bce854 5%, #ecf166 100%);
+	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#bce854', endColorstr='#ecf166',GradientType=0);
+	background-color:#bce854;
+}
+.myButton:active {
+	position:relative;
+	top:1px;
+}
+
+
+.crosshairs {
+  font-weight: 100;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
 
 .happyplacepopup {

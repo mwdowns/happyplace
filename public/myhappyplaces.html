@@ -10,6 +10,10 @@
 </div>
 <div class="footer">Twitter and stuff</div> -->
 
+<!-- <div class="makehappyplacebutton" ng-show="makehappyplacebutton">
+  <button ng-click="openHappyPlacePopup()">Make New Happy Place <i class="fa fa-smile-o" aria-hidden="true"></i></button>
+</div> -->
+
 <div ng-show="clickedhappyplace" class="happyplacepopup">
   <div class="makehappyplace">
     <form ng-submit="addNewHappyPlace()">
@@ -20,4 +24,12 @@
     <!-- <button class="closebutton" ng-click="closeHappyPlacePopup()">Close</button> -->
   </div>
   <button class="closebutton" ng-click="closeHappyPlacePopup()">Close</button>
+</div>
+
+<div class="makehappyplacebutton" ng-show="makehappyplacebutton">
+  <button class="myButton" ng-click="openHappyPlacePopup()">Make New Happy <i class="fa fa-smile-o" aria-hidden="true"></i> Place</button>
+</div>
+
+<div class="crosshairs">
+  +
 </div>

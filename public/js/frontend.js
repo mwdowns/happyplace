@@ -65,6 +65,7 @@ app.factory('happyplaceService', function($http, $cookies, $rootScope, $state) {
     $rootScope.clickedLogin = false;
     $rootScope.clickedSignup = false;
     $rootScope.visitingProfile = false;
+    $rootScope.makehappyplacebutton = false;
     $rootScope.markers = [{
       lat: 33.8486719,
       lng: -84.3733370,
@@ -372,6 +373,7 @@ app.controller('HappyPlaceLandingController', function($scope, $state, happyplac
           }];
           $state.go('myhappyplaces', {username: formData.username});
           $rootScope.loggedin = true;
+          $rootScope.makehappyplacebutton = true;
         }
         else {
           console.log('something happened');
@@ -403,6 +405,7 @@ app.controller('ProfileController', function($scope, $state, happyplaceService, 
   var cookie = $cookies.getObject('cookie_data');
   if (cookie) {
     $rootScope.visitingProfile = true;
+    $rootScope.makehappyplacebutton = false;
     console.log('on profile page', $rootScope.visitingProfile);
     $rootScope.username = cookie.username;
     $rootScope.loggedin = true;
@@ -456,6 +459,7 @@ app.controller('ProfileController', function($scope, $state, happyplaceService, 
     $scope.backToHappyPlaces = function() {
       console.log('clicked backtohappyplaces');
       $rootScope.visitingProfile = false;
+      $rootScope.makehappyplacebutton = true;
       $rootScope.markers = [{
         lat: 33.8486719,
         lng: -84.3733370,
@@ -490,6 +494,7 @@ app.controller("MyHappyPlacesMapController", function($scope, $state, happyplace
     console.log('these are the markers in the cookie, ', cookie.happyplaces);
     $rootScope.username = cookie.username;
     $rootScope.loggedin = true;
+    $rootScope.makehappyplacebutton = true;
   }
   else {
     console.log('there is no cookie');
