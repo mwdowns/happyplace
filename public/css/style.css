@@ -223,7 +223,7 @@ body {
   height: 300px;
   width: 300px;
   background-color: green;
-  opacity: 0.6;
+  opacity: .85;
 }
 
 .makehappyplace {
@@ -231,10 +231,13 @@ body {
   background-color: white;
   opacity: 1.0;
   border: 5px solid black;
+  border-radius: 20px;
   height: 200px;
   width: 200px;
   margin: auto;
   margin-top: 45px;
+  position: relative;
+  z-index: 1;
 }
 
 .error {
