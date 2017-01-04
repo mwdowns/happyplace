@@ -311,7 +311,9 @@ app.controller('HappyPlaceLandingController', function($scope, $state, happyplac
 
   happyplaceService.getworldhappyplaces()
   .then(function(worldhappyplaces) {
+    console.log(worldhappyplaces.data.data.length);
     for (var i = 0; i < worldhappyplaces.data.data.length; i++) {
+      console.log(worldhappyplaces.data.data[i].coords.lat);
       var gothappyplace = {
         lat: worldhappyplaces.data.data[i].coords.lat,
         lng: worldhappyplaces.data.data[i].coords.lng,
