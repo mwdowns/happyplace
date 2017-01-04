@@ -186,6 +186,7 @@ app.controller('HappyPlaceHeaderController', function($scope, $state, happyplace
   };
 
   $scope.openHappyPlacePopup = function() {
+    console.log('clicked openhappyplace');
     $rootScope.clickedhappyplace = true;
     console.log('clicked makenewhappyplace', $rootScope.clickedhappyplace);
   };
@@ -200,13 +201,14 @@ app.controller('HappyPlaceHeaderController', function($scope, $state, happyplace
     $scope.center.lng = args.leafletEvent.latlng.lng;
     $rootScope.clickedLat = args.leafletEvent.latlng.lat;
     $rootScope.clickedLng = args.leafletEvent.latlng.lng;
+    console.log($rootScope.clickedLat, $rootScope.clickedLng);
   });
 
-  $scope.$on('leafletDirectiveMap.popupopen', function(e) {
+  // $scope.$on('leafletDirectiveMap.popupopen', function(e) {
     // var something = e.popup._source;
-    console.log('clicked marker');
+    // console.log('clicked marker');
     // console.log(something);
-  });
+  // });
 
   $rootScope.markers = [{
     lat: 33.8486719,
@@ -504,8 +506,9 @@ app.controller("MyHappyPlacesMapController", function($scope, $state, happyplace
 
   happyplaceService.getMyHappyPlaces($rootScope.username)
   .then(function(happyplaces) {
-    // console.log('these are the happyplaces from the database', happyplaces.data);
+    console.log('these are the happyplaces from the database', happyplaces.data);
     for (var i = 0; i < happyplaces.data.length; i++) {
+      console.log(happyplaces.data[i].coords.lat);
       var gothappyplace = {
         lat: happyplaces.data[i].coords.lat,
         lng: happyplaces.data[i].coords.lng,
@@ -527,6 +530,13 @@ app.controller("MyHappyPlacesMapController", function($scope, $state, happyplace
     console.log('there was an error getting happyplaces', err);
   });
 
+  $scope.openHappyPlacePopup = function() {
+    console.log('clicked openhappyplace');
+    $rootScope.clickedhappyplace = true;
+    console.log('clicked makenewhappyplace', $rootScope.clickedhappyplace);
+    console.log($rootScope.clickedLat, $rootScope.clickedLng);
+  };
+
   $scope.addNewHappyPlace = function(message) {
     if($scope.message) {
       $scope.messageerror = false;
@@ -544,6 +554,7 @@ app.controller("MyHappyPlacesMapController", function($scope, $state, happyplace
           noHide: true
         }
       };
+      console.log(createdHappyPlace);
       $rootScope.markers.push(createdHappyPlace);
       happyplaceService.addHappyPlace($rootScope.clickedLat, $rootScope.clickedLng, $scope.message)
       .then(function(data) {
