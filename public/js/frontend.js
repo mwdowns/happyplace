@@ -161,7 +161,9 @@ app.factory('happyplaceService', function($http, $cookies, $rootScope, $state) {
     return $http.post('/remove', removeData);
   };
 
-
+  service.getByMessage = function(message) {
+    return $http.get('/gethappyplacebymessage/' + message);
+  };
 
   return service;
 });
@@ -199,16 +201,24 @@ app.controller('HappyPlaceHeaderController', function($scope, $state, happyplace
   $scope.$on('leafletDirectiveMap.click', function(event, args){
     $scope.center.lat = args.leafletEvent.latlng.lat;
     $scope.center.lng = args.leafletEvent.latlng.lng;
-    $rootScope.clickedLat = args.leafletEvent.latlng.lat;
-    $rootScope.clickedLng = args.leafletEvent.latlng.lng;
-    console.log($rootScope.clickedLat, $rootScope.clickedLng);
+    $rootScope.userMovedCenterLat = args.leafletEvent.latlng.lat;
+    $rootScope.userMovedCenterLng = args.leafletEvent.latlng.lng;
   });
 
-  // $scope.$on('leafletDirectiveMap.popupopen', function(e) {
-    // var something = e.popup._source;
-    // console.log('clicked marker');
-    // console.log(something);
-  // });
+  $scope.$on('leafletDirectiveMarker.click', function(event, args) {
+    // console.log(args.leafletEvent.target.getLatLng());
+    $rootScope.clickedMarkerCoords = args.leafletEvent.target.getLatLng();
+    // $rootScope.clickedMarkerMessage = args.leafletEvent.target.getPopup();
+    var markerInfo = args.leafletEvent.target.getPopup();
+    $rootScope.clickedMarkerMessage = markerInfo._content.slice(0, markerInfo._content.indexOf('<'));
+  });
+
+  $scope.$on('leafletDirectiveMap.dragend', function(event, args) {
+    var center = args.leafletEvent.target.getCenter();
+    // console.log(center.lat, center.lng);
+    $rootScope.userMovedCenterLat = center.lat;
+    $rootScope.userMovedCenterLng = center.lng;
+  });
 
   $rootScope.markers = [{
     lat: 33.8486719,
@@ -258,29 +268,28 @@ app.controller('HappyPlaceHeaderController', function($scope, $state, happyplace
     },
     events: {
       map: {
-        enable: ['click', 'mousemove', 'load', 'popupopen'],
+        enable: ['click', 'mousemove', 'load', 'popupopen', 'dragend'],
         logic: 'emit'
       }
     }
   });
 
 
-if (navigator.geolocation) {
-  console.log('uses geolocation');
-  navigator.geolocation.getCurrentPosition(findPosition);
-  console.log('maybe i can set the coords now');
-}
-else {
-  console.log('Geolocation is not supported by this browser.');
-}
+  if (navigator.geolocation) {
+  // console.log('uses geolocation');
+    navigator.geolocation.getCurrentPosition(findPosition);
+  }
+  else {
+    console.log('does not use geolocation');
+  }
 
-function findPosition(data) {
-  console.log(data.coords.latitude, data.coords.longitude);
-  console.log('maybe i can use the coords here');
-  $scope.center.lat = data.coords.latitude;
-  $scope.center.lng = data.coords.longitude;
-  $scope.center.zoom = 14;
-}
+  function findPosition(data) {
+  // console.log(data.coords.latitude, data.coords.longitude);
+  // console.log('maybe i can use the coords here');
+    $scope.center.lat = data.coords.latitude;
+    $scope.center.lng = data.coords.longitude;
+    $scope.center.zoom = 14;
+  }
 
 });
 
@@ -307,7 +316,7 @@ app.controller('HappyPlaceLandingController', function($scope, $state, happyplac
         lat: worldhappyplaces.data.data[i].coords.lat,
         lng: worldhappyplaces.data.data[i].coords.lng,
         group: 'world',
-        focus: true,
+        focus: false,
         message: worldhappyplaces.data.data[i].userID[0] + '<br>' + worldhappyplaces.data.data[i].message,
         icon: happyMarker,
         draggable: false,
@@ -427,8 +436,9 @@ app.controller('ProfileController', function($scope, $state, happyplaceService, 
       console.log($scope.happyplaceID, $scope.oldMessage);
 
       $scope.changeMessage = function() {
-        if ($scope.newMessage) {
-          happyplaceService.editMessage($scope.happyplaceID, $scope.newMessage)
+        if ($scope.oldMessage) {
+          console.log($scope.oldMessage);
+          happyplaceService.editMessage($scope.happyplaceID, $scope.oldMessage)
           .then(function(data) {
             console.log('you updated the message', data);
             $scope.editingHappyPlace = false;
@@ -441,7 +451,15 @@ app.controller('ProfileController', function($scope, $state, happyplaceService, 
         else {
           $scope.messageerror = true;
         }
-        $state.go('profile');
+        happyplaceService.getMyProfileInfo($rootScope.username)
+        .then(function(info) {
+          console.log('this is the info, ', info);
+          $scope.data = info.data;
+        })
+        .catch(function(err) {
+          console.log('you got an error', err);
+        });
+        // $state.go('profile');
       };
 
       $scope.deleteHappyPlace = function() {
@@ -454,6 +472,14 @@ app.controller('ProfileController', function($scope, $state, happyplaceService, 
         })
         .catch(function(err) {
           console.log('you got an error, ', err);
+        });
+        happyplaceService.getMyProfileInfo($rootScope.username)
+        .then(function(info) {
+          console.log('this is the info, ', info);
+          $scope.data = info.data;
+        })
+        .catch(function(err) {
+          console.log('you got an error', err);
         });
       };
     };
@@ -488,33 +514,34 @@ app.controller('ProfileController', function($scope, $state, happyplaceService, 
 
 app.controller("MyHappyPlacesMapController", function($scope, $state, happyplaceService, $cookies, $rootScope) {
 
+  var markerHTML = '<br><button ng-show="!editMarker" ng-click="editHappyPlace()">Edit</button><form ng-show="editMarker" ng-submit="changeMessage()"><p>Write a bit about what made you happy here:</p><textarea class="happyplacemessage" type="text" rows="4" cols="25" ng-model="oldMessage" maxlength="320">{{oldMessage}}</textarea><p ng-show="messageerror" class="error">You must enter a message!</p><button>Edit Message</button></form>';
+
 
   var cookie = $cookies.getObject('cookie_data');
   if (cookie) {
-    console.log('there is a cookie');
-    console.log('these are the markers', $rootScope.markers);
-    console.log('these are the markers in the cookie, ', cookie.happyplaces);
+    // console.log('there is a cookie');
+    // console.log('these are the markers', $rootScope.markers);
+    // console.log('these are the markers in the cookie, ', cookie.happyplaces);
     $rootScope.username = cookie.username;
     $rootScope.loggedin = true;
     $rootScope.makehappyplacebutton = true;
   }
   else {
-    console.log('there is no cookie');
+    // console.log('there is no cookie');
     $rootScope.needtologin = true;
     $state.go('happyplace');
   }
 
   happyplaceService.getMyHappyPlaces($rootScope.username)
   .then(function(happyplaces) {
-    console.log('these are the happyplaces from the database', happyplaces.data);
+    // console.log('these are the happyplaces from the database', happyplaces.data);
     for (var i = 0; i < happyplaces.data.length; i++) {
-      console.log(happyplaces.data[i].coords.lat);
       var gothappyplace = {
         lat: happyplaces.data[i].coords.lat,
         lng: happyplaces.data[i].coords.lng,
         group: 'world',
-        focus: true,
-        message: happyplaces.data[i].message,
+        focus: false,
+        message: happyplaces.data[i].message + markerHTML,
         icon: happyMarker,
         draggable: false,
         options: {
@@ -524,7 +551,7 @@ app.controller("MyHappyPlacesMapController", function($scope, $state, happyplace
       // console.log('this got happyplaces,', gothappyplace);
       $rootScope.markers.push(gothappyplace);
     }
-    console.log($rootScope.markers);
+    // console.log($rootScope.markers);
   })
   .catch(function(err) {
     console.log('there was an error getting happyplaces', err);
@@ -534,20 +561,122 @@ app.controller("MyHappyPlacesMapController", function($scope, $state, happyplace
     console.log('clicked openhappyplace');
     $rootScope.clickedhappyplace = true;
     console.log('clicked makenewhappyplace', $rootScope.clickedhappyplace);
-    console.log($rootScope.clickedLat, $rootScope.clickedLng);
+    console.log($rootScope.userMovedCenterLat, $rootScope.userMovedCenterLng);
   };
+
+  // $scope.markerLat = $rootScope.clickedMarkerCoords.lat;
+  // $scope.markerLng = $rootScope.clickedMarkerCoords.lng;
+
+  $rootScope.editHappyPlace = function() {
+    $rootScope.editMarker = true;
+    $scope.message = $rootScope.clickedMarkerMessage;
+    $rootScope.oldMessage = $rootScope.clickedMarkerMessage;
+    console.log('clicked edit');
+    console.log($rootScope.clickedMarkerCoords.lat, $rootScope.clickedMarkerCoords.lng, $rootScope.clickedMarkerMessage);
+
+    $rootScope.changeMessage = function() {
+      if ($rootScope.oldMessage) {
+        happyplaceService.getByMessage($scope.message)
+        .then(function(data) {
+          var happyPlaceID = data.data.data[0]._id;
+          console.log($rootScope.oldMessage);
+          happyplaceService.editMessage(happyPlaceID, $rootScope.oldMessage)
+          .then(function(data) {
+            console.log('you updated the message', data);
+            $rootScope.editMarker = false;
+            for (var i = 0; i < $rootScope.markers.length; i++) {
+              if ($rootScope.markers[i].message.slice(0, $rootScope.markers[i].message.indexOf('<')) === $scope.message) {
+                var replacemarker = {
+                  lat: $rootScope.markers[i].lat,
+                  lng: $rootScope.markers[i].lng,
+                  group: 'world',
+                  focus: false,
+                  message: $rootScope.oldMessage + markerHTML,
+                  icon: happyMarker,
+                  draggable: false,
+                  options: {
+                    noHide: true
+                  }
+                };
+                $rootScope.markers.splice(i, 1);
+                $rootScope.markers.push(replacemarker);
+                $state.go('myhappyplaces');
+              }
+            }
+          })
+          .catch(function(err) {
+            console.log('you got a error, ', err);
+          });
+        })
+        .catch(function(err) {
+          console.log('you got an error, ', err);
+        });
+      }
+    };
+
+  };
+  //
+  //   $scope.changeMessage = function() {
+  //     if ($scope.oldMessage) {
+  //       console.log($scope.oldMessage);
+  //       happyplaceService.editMessage($scope.happyplaceID, $scope.oldMessage)
+  //       .then(function(data) {
+  //         console.log('you updated the message', data);
+  //         $scope.editingHappyPlace = false;
+  //
+  //       })
+  //       .catch(function(err) {
+  //         console.log('you got an error, ', err);
+  //       });
+  //     }
+  //     else {
+  //       $scope.messageerror = true;
+  //     }
+  //     happyplaceService.getMyProfileInfo($rootScope.username)
+  //     .then(function(info) {
+  //       console.log('this is the info, ', info);
+  //       $scope.data = info.data;
+  //     })
+  //     .catch(function(err) {
+  //       console.log('you got an error', err);
+  //     });
+  //     // $state.go('profile');
+  //   };
+  //
+  //   $scope.deleteHappyPlace = function() {
+  //     console.log($scope.happyplaceID);
+  //     happyplaceService.removeHappyPlace($scope.happyplaceID)
+  //     .then(function(data) {
+  //       console.log('you deleted this Happy Place', data);
+  //       $scope.editingHappyPlace = false;
+  //       $state.go('profile');
+  //     })
+  //     .catch(function(err) {
+  //       console.log('you got an error, ', err);
+  //     });
+  //     happyplaceService.getMyProfileInfo($rootScope.username)
+  //     .then(function(info) {
+  //       console.log('this is the info, ', info);
+  //       $scope.data = info.data;
+  //     })
+  //     .catch(function(err) {
+  //       console.log('you got an error', err);
+  //     });
+  //   };
+  // };
+
 
   $scope.addNewHappyPlace = function(message) {
     if($scope.message) {
       $scope.messageerror = false;
       // $scope.clickedhappyplace = false;
-      var markermessage = 'username<br>' + $scope.message;
+      var markermessage = $rootScope.username + ':<br>' + $scope.message;
       var createdHappyPlace = {
-        lat: $rootScope.clickedLat,
-        lng: $rootScope.clickedLng,
+        lat: $rootScope.userMovedCenterLat,
+        lng: $rootScope.userMovedCenterLng,
         group: 'world',
-        focus: true,
-        message: markermessage,
+        focus: false,
+        message: $scope.message + markerHTML,
         draggable: false,
         icon: happyMarker,
         options: {
@@ -556,7 +685,7 @@ app.controller("MyHappyPlacesMapController", function($scope, $state, happyplace
       };
       console.log(createdHappyPlace);
       $rootScope.markers.push(createdHappyPlace);
-      happyplaceService.addHappyPlace($rootScope.clickedLat, $rootScope.clickedLng, $scope.message)
+      happyplaceService.addHappyPlace($rootScope.userMovedCenterLat, $rootScope.userMovedCenterLng, $scope.message)
       .then(function(data) {
         console.log('success!', data);
         $rootScope.clickedhappyplace = false;

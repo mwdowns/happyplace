@@ -107,6 +107,19 @@ app.post('/login', function(req, res) {
   });
 });
 
+app.get('/gethappyplacebymessage/:message', function(req, res) {
+  var message = req.params.message;
+  Happyplace.find({
+    message: decodeURI(message)
+  })
+  .then(function(data) {
+    res.json({message: 'got data', data: data});
+  })
+  .catch(function(err) {
+    res.json({message: 'you got an error', error: err});
+  });
+});
+
 app.get('/profile/:username', function(req, res) {
   // User Profile page
   var username = req.params.username;
