@@ -1,3 +1,5 @@
+![alt text](public/img/Logo.png "HappyPlace Logo")
+
 HappyPlace
 ==========
 
@@ -30,3 +32,5 @@ HowTo
 The app is relatively intuitive. When not signed in, you can view the world happyplaces, but you can not create a happyplace. Once you create an account, you can create happylaces.
 
 To create a happyplace, simply click on the map and move the crosshair in the middle of the page to the place you want to create and click the "create a happy place" button. Your happyplace marker should appear on the map, and you should be able to edit or delete the message in the marker popup.
+
+![alt text](public/img/MainScreen.png "Landing page after login")
