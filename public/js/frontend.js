@@ -218,8 +218,16 @@ app.controller('HappyPlaceHeaderController', function($scope, $state, happyplace
     }
     else {
       console.log('no cookie');
-      $rootScope.visitingProfile = true;
-      $state.go('phone');
+      if ($state.current.name === 'phone') {
+        console.log('on phone');
+        $rootScope.visitingProfile = false;
+        $state.go('myhappyplaces');
+      }
+      else {
+        $rootScope.visitingProfile = true;
+        $state.go('phone');
+      }
+
     }
   };
 
