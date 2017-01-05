@@ -4,6 +4,27 @@
 #354010
 #AABF06*/
 
+@media (max-width: 415px) {
+
+  .header .logo {
+    width: 100%;
+  }
+
+  .header .loginsignup {
+    display: none;
+  }
+
+  .header .logout {
+    display: none;
+  }
+
+  .footer {
+    display: none;
+    height: 0;
+  }
+
+}
+
 
 body {
   margin: 0;
@@ -82,87 +103,6 @@ body {
   transform: translate(-50%, -50%);
 }
 
-/*.myButton {
-	-moz-box-shadow:inset 0px 1px 0px 0px #f0f2c4;
-	-webkit-box-shadow:inset 0px 1px 0px 0px #f0f2c4;
-	box-shadow:inset 0px 1px 0px 0px #f0f2c4;
-	background:-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #ecf166), color-stop(1, #bce854));
-	background:-moz-linear-gradient(top, #ecf166 5%, #bce854 100%);
-	background:-webkit-linear-gradient(top, #ecf166 5%, #bce854 100%);
-	background:-o-linear-gradient(top, #ecf166 5%, #bce854 100%);
-	background:-ms-linear-gradient(top, #ecf166 5%, #bce854 100%);
-	background:linear-gradient(to bottom, #ecf166 5%, #bce854 100%);
-	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#ecf166', endColorstr='#bce854',GradientType=0);
-	background-color:#ecf166;
-	-moz-border-radius:6px;
-	-webkit-border-radius:6px;
-	border-radius:6px;
-	border:1px solid #5d851d;
-	display:inline-block;
-	cursor:pointer;
-	color:#373d3f;
-	font-family:'Lato', sans-serif;
-	font-size: 1em;
-	padding:6px 24px;
-	text-decoration:none;
-	text-shadow:0px 1px 0px #528009;
-}
-.myButton:hover {
-	background:-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #bce854), color-stop(1, #ecf166));
-	background:-moz-linear-gradient(top, #bce854 5%, #ecf166 100%);
-	background:-webkit-linear-gradient(top, #bce854 5%, #ecf166 100%);
-	background:-o-linear-gradient(top, #bce854 5%, #ecf166 100%);
-	background:-ms-linear-gradient(top, #bce854 5%, #ecf166 100%);
-	background:linear-gradient(to bottom, #bce854 5%, #ecf166 100%);
-	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#bce854', endColorstr='#ecf166',GradientType=0);
-	background-color:#bce854;
-}
-.myButton:active {
-	position:relative;
-	top:1px;
-}*/
-
-/*.myButton {
-	-moz-box-shadow:inset 0px 1px 3px 0px #959642;
-	-webkit-box-shadow:inset 0px 1px 3px 0px #959642;
-	box-shadow:inset 0px 1px 3px 0px #959642;
-	background:-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #ebf229), color-stop(1, #dde041));
-	background:-moz-linear-gradient(top, #ebf229 5%, #dde041 100%);
-	background:-webkit-linear-gradient(top, #ebf229 5%, #dde041 100%);
-	background:-o-linear-gradient(top, #ebf229 5%, #dde041 100%);
-	background:-ms-linear-gradient(top, #ebf229 5%, #dde041 100%);
-	background:linear-gradient(to bottom, #ebf229 5%, #dde041 100%);
-	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#ebf229', endColorstr='#dde041',GradientType=0);
-	background-color:#ebf229;
-	-moz-border-radius:5px;
-	-webkit-border-radius:5px;
-	border-radius:5px;
-	border:1px solid #483f59;
-	display:inline-block;
-	cursor:pointer;
-	color:#483f59;
-  font-family:'Lato', sans-serif;
-	font-size: 1em;
-	font-weight:bold;
-	padding:11px 23px;
-	text-decoration:none;
-	text-shadow:0px -1px 0px #d3c5f0;
-}
-.myButton:hover {
-	background:-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #dde041), color-stop(1, #ebf229));
-	background:-moz-linear-gradient(top, #dde041 5%, #ebf229 100%);
-	background:-webkit-linear-gradient(top, #dde041 5%, #ebf229 100%);
-	background:-o-linear-gradient(top, #dde041 5%, #ebf229 100%);
-	background:-ms-linear-gradient(top, #dde041 5%, #ebf229 100%);
-	background:linear-gradient(to bottom, #dde041 5%, #ebf229 100%);
-	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#dde041', endColorstr='#ebf229',GradientType=0);
-	background-color:#dde041;
-}
-.myButton:active {
-	position:relative;
-	top:1px;
-}*/
-
 .myButton {
 	-moz-box-shadow: 0px 10px 14px -7px #483F59;
 	-webkit-box-shadow: 0px 10px 14px -7px #483F59;
@@ -202,9 +142,6 @@ body {
 	position:relative;
 	top:1px;
 }
-
-
-
 
 .crosshairs {
   font-weight: 100;
@@ -262,7 +199,7 @@ body {
   height: 200px;
   width: 200px;
   border-radius: 10px;
-  background-color: green;
+  background-color: #354010;
   color: white;
   margin: 5px;
   padding: 5px;
@@ -294,4 +231,101 @@ a:link, a:visited {
 
 a:hover {
   color: inherit;
+}
+
+@media (max-width: 415px) {
+
+  .header {
+    margin: 0;
+    height: 7vh;
+    padding-bottom: 3px;
+  }
+
+  .map {
+    height: 94vh;
+  }
+
+  .happyplacelist {
+    margin-left:auto;
+    margin-right: auto;
+  }
+
+  .makehappyplacebutton {
+    position: fixed;
+    top: 15vh;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+}
+
+@media (min-width: 415px) {
+
+  .smallnav {
+    display: none;
+  }
+
+}
+
+.navlist {
+  float: right;
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background-color: #ecf229;
+}
+
+/*ul.navlist li {float: right;}*/
+
+.navlist p {
+  margin: 0;
+}
+
+.navlist ul li {
+  display: block;
+  color: #483f59;
+  text-align: center;
+  padding: 5px 16px 0 16px;
+  text-decoration: none;
+  transition: 0.3s;
+  font-size: 1em;
+}
+
+.navlist .hamburger {
+  height: 7vh;
+  padding: 5px 16px 0 16px;
+  font-size: 1.5em;
+  text-align: center;
+}
+
+.navlist .hamburger:hover {
+  color: #ecf229;
+  background-color: #4A5914;
+}
+
+.phonepage {
+  height: 100%;
+  color: #ecf229;
+  background-color: #4A5914;
+}
+
+.phonelogin, .phonesignup {
+  text-align: center;
+}
+
+.list {
+  display: flex;
+  flex-flow: column;
+  justify-content: space-around;
+}
+
+.phonelogin, .phonesignup, .phoneprofile, .phonelogout {
+  width: 100%;
+}
+
+.phonebutton, .phoneclosebutton {
+  background-color: #483f59;
+  color: #ecf229;
+  font-size: 1em;
 }

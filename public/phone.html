@@ -1,0 +1,83 @@
+<style>
+  body {
+    color: #ecf229;
+    background-color: #4A5914;
+  }
+
+  .navlist {
+    color: #ecf229;
+    background-color: #4A5914
+  }
+
+  .phonepage p {
+    text-align: center;
+    display: block;
+    padding: 5px 16px 0 16px;
+    text-decoration: none;
+    transition: 0.3s;
+    font-size: 4em;
+  }
+
+</style>
+
+<div class="phonepage">
+  <div class="phoneloginsignup" ng-show="!phoneloggedin">
+    <div class="list">
+      <div class="phonelogin" ng-hide="signingup">
+        <p ng-click="openPhoneLogin()">Login</p>
+        <div class="phonelogin" ng-show="loggingin" ng-hide="!signingup">
+          <form ng-submit="loginSubmit()" style="margin-top: 45px">
+            <div>
+              <label for="username">Username:</label><br>
+              <input class="username" ng-model="username" type="text" name="username" size="25">
+            </div>
+            <div>
+              <label for="password">Password:</label><br>
+              <input class="password" ng-model="password" type="password" name="password" size="25">
+            </div><br>
+            <button class="phonebutton" type="submit">Submit</button><br>
+            <p ng-show="wronglogin" class="error">There was a problem logining in! Either wrong name or password.</p>
+          </form><br>
+          <button class="phoneclosebutton" ng-click="closePhoneHider()">Close</button>
+        </div>
+      </div>
+      <div class="phonesignup" ng-hide="loggingin">
+        <p ng-click="openPhoneSignup()">Signup</p>
+        <div class="phonesignup" ng-hide="!loggingin" ng-show="signingup">
+          <form ng-submit="signupSubmit()" style="margin-top: 15px">
+            <div>
+              <label for="username">Username:</label><br>
+              <input class="username" ng-model="username" type="text" name="username" size="25">
+            </div>
+            <div>
+              <label for="email">Email:</label><br>
+              <input class="email" ng-model="email" type="text" name="email" size="25">
+            </div>
+            <div>
+              <label for="password">Password:</label><br>
+              <input class="password" ng-model="password" type="password" name="password" size="25">
+            </div>
+            <div>
+              <label for="confirm-password">Confirm password:</label><br>
+              <input id="confirm-password" ng-model="confirmPassword" type="password" name="" size="25">
+            </div>
+            <button class="phonebutton" type="submit">Submit</button>
+              <p ng-show="signuperror" class="error">There was a problem signing up!</p>
+          </form><br>
+          <button class="phoneclosebutton" ng-click="closePhoneHider()">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="phoneloggedin" ng-show="phoneloggedin">
+    <div class="list">
+      <div class="phoneprofile">
+        <p ng-click="phoneGoToProfile()">Profile</p>
+      </div>
+      <div class="phonelogout">
+        <p ng-click="logout()">Logout</p>
+      </div>
+    </div>
+  </div>
+</div>

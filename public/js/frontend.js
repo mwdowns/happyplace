@@ -37,6 +37,12 @@ app.config(function($stateProvider, $urlRouterProvider) {
       url: '/myhappyplaces',
       templateUrl: 'myhappyplaces.html',
       controller: 'MyHappyPlacesMapController'
+    })
+    .state({
+      name: 'phone',
+      url: '/phone',
+      templateUrl: 'phone.html',
+      controller: 'PhoneController'
     });
 
   $urlRouterProvider.otherwise('/');
@@ -59,6 +65,7 @@ app.factory('happyplaceService', function($http, $cookies, $rootScope, $state) {
     $rootScope.clickedSignup = false;
     $rootScope.visitingProfile = false;
     $rootScope.makehappyplacebutton = false;
+    $rootScope.phoneloggedin = false;
     $rootScope.markers = [{
       lat: 33.8486719,
       lng: -84.3733370,
@@ -189,6 +196,31 @@ app.controller('HappyPlaceHeaderController', function($scope, $state, happyplace
   $scope.closeHappyPlacePopup = function() {
     console.log('clicked closepopup');
     $scope.clickedhappyplace = false;
+  };
+
+  $scope.clickedhamburger = function() {
+    console.log('clicked hamburger');
+    var cookie = $cookies.getObject('cookie_data');
+    if (cookie) {
+      console.log($state);
+      console.log('there is a cookie');
+      if ($state.current.name === 'phone') {
+        console.log('on phone');
+        $rootScope.visitingProfile = false;
+        $state.go('myhappyplaces');
+      }
+      else {
+        console.log('not on phone');
+        $rootScope.visitingProfile = true;
+        $rootScope.phoneloggedin = true;
+        $state.go('phone');
+      }
+    }
+    else {
+      console.log('no cookie');
+      $rootScope.visitingProfile = true;
+      $state.go('phone');
+    }
   };
 
   $scope.$on('leafletDirectiveMap.click', function(event, args){
@@ -686,4 +718,109 @@ app.controller("MyHappyPlacesMapController", function($scope, $state, happyplace
     console.log('clicked closepopup');
     $rootScope.clickedhappyplace = false;
   };
+});
+
+app.controller('PhoneController', function($scope, $state, happyplaceService, $cookies, $rootScope) {
+  $rootScope.visitingProfile = true;
+  console.log($scope.loggingin);
+  var cookie = $cookies.getObject('cookie_data');
+  if (cookie) {
+    console.log('there is a cookie');
+    $scope.phoneloggedin = true;
+  }
+  else {
+    console.log('there is no cookie');
+  }
+
+  $scope.openPhoneLogin = function() {
+    console.log('opened phone login');
+    $scope.loggingin = true;
+  };
+
+  $scope.openPhoneSignup = function() {
+    console.log('opened phone signup');
+    $scope.signingup = true;
+  };
+
+  $scope.closePhoneHider = function() {
+    console.log('close divs');
+    $scope.loggingin = false;
+    $scope.signingup = false;
+  };
+
+  $scope.phoneGoToProfile = function() {
+    console.log('clicked phone profile');
+    $state.go('profile');
+  };
+
+  $rootScope.clickedhamburger = function() {
+    console.log('clicked hamburger');
+  };
+
+  $scope.signupSubmit = function() {
+    if ($scope.password != $scope.confirmPassword) {
+      $scope.passwordsdontmatch = true;
+    }
+    else {
+      $scope.passwordsdontmatch = false;
+      var formData = {
+        username: $scope.username,
+        password: $scope.password,
+        email: $scope.email
+      };
+      happyplaceService.signup(formData)
+        .success(function() {
+          $scope.loggingin = true;
+          $scope.signingup = false;
+          console.log('success');
+        })
+        .error(function() {
+          $scope.signuperror = true;
+          console.log('could not sign up');
+        });
+      $scope.username = '';
+      $scope.email = '';
+      $scope.password = '';
+    }
+  };
+
+  $scope.loginSubmit = function() {
+    console.log('clicked');
+    var formData = {
+      username: $scope.username,
+      password: $scope.password
+    };
+    console.log('clicked submit and this is the data', formData);
+    happyplaceService.login(formData)
+      .then(function() {
+        if($cookies.getObject('cookie_data')) {
+          $rootScope.markers = [{
+            lat: 33.8486719,
+            lng: -84.3733370,
+            group: 'world',
+            focus: true,
+            message: "ATV: Home of HappyPlace",
+            icon: happyMarker,
+            draggable: false,
+            options: {
+              noHide: true
+            }
+          }];
+          $state.go('myhappyplaces', {username: formData.username});
+          $rootScope.loggedin = true;
+          $rootScope.makehappyplacebutton = true;
+          $rootScope.visitingProfile = false;
+        }
+        else {
+          console.log('something happened');
+        }
+      })
+      .catch(function(err) {
+        console.log('login failed');
+        $scope.loginerror = true;
+      });
+    $scope.user = '';
+    $scope.password = '';
+  };
+
 });

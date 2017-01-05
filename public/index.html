@@ -32,6 +32,7 @@
   </head>
   <!-- <body> -->
   <body>
+
     <div ng-controller="HappyPlaceHeaderController">
       <div class="header">
         <div class="logo">
@@ -44,6 +45,25 @@
           <p>Hello, {{username}}. Where's your HappyPlace today?</p>
           <button ng-click="clickedProfile()">Profile</button> |
           <button ng-click="logout()">Logout</button><br>
+        </div>
+        <div class="smallnav">
+          <div class="navlist">
+            <div class="hamburger" ng-click="clickedhamburger()">
+              <p>☰</p>
+            </div>
+            <!-- <div class="navloginsignup" ng-hide="!clickedhamburger" ng-show="!navloggedin">
+              <ul>
+                <li><p>Login</p></li>
+                <li><p>Signup</p></li>
+              </ul>
+            </div>
+            <div class="navloggedin" ng-hide="!clickedhamburger" ng-show="navloggedin">
+              <ul>
+                <li><p>Profile</p></li>
+                <li><p>Logout</p></li>
+              </ul>
+            </div> -->
+          </div>
         </div>
       </div>
       <!-- <div class="happyplacebuttons" ng-show="makehappyplacebutton">
