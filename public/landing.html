@@ -25,7 +25,7 @@
         <input class="password" ng-model="password" type="password" name="password" size="25">
       </div>
       <button type="submit">Submit</button>
-    <p ng-show="wronglogin" class="error">There was a problem logining in! Either wrong name or password.</p>
+    <!-- <p ng-show="wronglogin" class="error">There was a problem logining in! Either wrong name or password.</p> -->
     </form>
   </div>
   <button class="closebutton" ng-click="closeHappyPlacePopup()">Close</button>
@@ -52,8 +52,19 @@
         <input id="confirm-password" ng-model="confirmPassword" type="password" name="" size="25">
       </div>
       <button type="submit">Submit</button>
-    <p ng-show="signuperror" class="error">There was a problem signing up!</p>
+      <!-- <p ng-show="passwordsdontmatch" class="error">There was a problem signing up! Your passwords do not match.</p>
+      <p ng-show="signuperror" class="error">There was a problem signing up! That username is already taken. Please choose another.</p> -->
     </form>
+  </div>
+  <button class="closebutton" ng-click="closeHappyPlacePopup()">Close</button>
+</div>
+
+<!-- error messsage div -->
+<div ng-show="loginsignuperror" class="happyplacepopup">
+  <div class="makehappyplace">
+    <p ng-show="passwordsdontmatch" class="error">There was a problem signing up! Your passwords do not match.</p>
+    <p ng-show="signuperror" class="error">There was a problem signing up! That username is already taken. Please choose another.</p>
+    <p ng-show="wronglogin" class="error">There was a problem logining in! Either wrong name or password.</p>
   </div>
   <button class="closebutton" ng-click="closeHappyPlacePopup()">Close</button>
 </div>

@@ -60,7 +60,7 @@ app.post('/signup', function(req, res) {
       })
       .catch(function(err) {
         console.log(err);
-        res.json({message: 'you got an error:', data: err});
+        res.json({message: 'you got an error:', err: err});
       });
   });
 });
