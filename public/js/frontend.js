@@ -621,6 +621,7 @@ app.controller("MyHappyPlacesMapController", function($scope, $state, happyplace
   $scope.openHappyPlacePopup = function() {
     console.log('clicked openhappyplace');
     $rootScope.clickedhappyplace = true;
+    $rootScope.makinghappyplace = true;
     console.log('clicked makenewhappyplace', $rootScope.clickedhappyplace);
     console.log($rootScope.userMovedCenterLat, $rootScope.userMovedCenterLng);
   };
@@ -695,6 +696,7 @@ app.controller("MyHappyPlacesMapController", function($scope, $state, happyplace
       .then(function(data) {
         console.log('success!', data);
         $rootScope.clickedhappyplace = false;
+        $rootScope.makinghappyplace = false;
         $scope.message = '';
       })
       .error(function(err) {
@@ -709,6 +711,7 @@ app.controller("MyHappyPlacesMapController", function($scope, $state, happyplace
   $scope.closeHappyPlacePopup = function() {
     console.log('clicked closepopup');
     $rootScope.clickedhappyplace = false;
+    $rootScope.makinghappyplace = false;
   };
 });
 //The controller for phone sized pages for logging in and signing up.

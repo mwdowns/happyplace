@@ -237,11 +237,25 @@ a:hover {
   color: inherit;
 }
 
-@media (max-width: 415px) {
+@media (max-width: 620px) {
+  .loggedinmessage {
+    display: none;
+  }
+
+  .header {
+    padding-top: 0px;
+  }
+
+  .logout {
+    padding-top: 10px;
+  }
+}
+
+@media (max-width: 416px) {
 
   .header {
     margin: 0;
-    height: 10vh;
+    height: 6vh;
     padding-bottom: 3px;
   }
 
@@ -352,4 +366,9 @@ a:hover {
   background-color: #483f59;
   color: #ecf229;
   font-size: 1em;
+}
+
+.phonep:hover {
+  background-color: #483f59;
+  padding-bottom: 15px;
 }

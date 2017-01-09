@@ -71,8 +71,8 @@ app.post('/login', function(req, res) {
   // console.log(user, password);
   User.findById(user)
   .then(function(data) {
-    console.log(data.password);
-    console.log(password);
+    // console.log(data.password);
+    // console.log(password);
     return [data, bcrypt.compare(password, data.password)];
   })
   .spread(function(data, newHash) {

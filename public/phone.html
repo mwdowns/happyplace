@@ -24,7 +24,7 @@
   <div class="phoneloginsignup" ng-show="!phoneloggedin">
     <div class="list">
       <div class="phonelogin" ng-hide="signingup">
-        <p ng-click="openPhoneLogin()">Login</p>
+        <p class="phonep" ng-click="openPhoneLogin()">Login</p>
         <div class="phonelogin" ng-show="loggingin" ng-hide="!signingup">
           <form ng-submit="loginSubmit()" style="margin-top: 45px">
             <div>
@@ -42,7 +42,7 @@
         </div>
       </div>
       <div class="phonesignup" ng-hide="loggingin">
-        <p ng-click="openPhoneSignup()">Signup</p>
+        <p class="phonep" ng-click="openPhoneSignup()">Signup</p>
         <div class="phonesignup" ng-hide="!loggingin" ng-show="signingup">
           <form ng-submit="signupSubmit()" style="margin-top: 15px">
             <div>
@@ -73,10 +73,10 @@
   <div class="phoneloggedin" ng-show="phoneloggedin">
     <div class="list">
       <div class="phoneprofile">
-        <p ng-click="phoneGoToProfile()">Profile</p>
+        <p class="phonep" ng-click="phoneGoToProfile()">Profile</p>
       </div>
       <div class="phonelogout">
-        <p ng-click="logout()">Logout</p>
+        <p class="phonep" ng-click="logout()">Logout</p>
       </div>
     </div>
   </div>
