@@ -627,23 +627,23 @@ app.controller("MyHappyPlacesMapController", function($scope, $state, happyplace
   };
 
   $rootScope.editHappyPlace = function() {
-    console.log('editHappyPlace');
+    // console.log('editHappyPlace');
     $rootScope.editMarker = true;
-    console.log('$rootScope.clickedMarkerMessage', $rootScope.clickedMarkerMessage);
+    // console.log('$rootScope.clickedMarkerMessage', $rootScope.clickedMarkerMessage);
     $rootScope.checkMessage = $rootScope.clickedMarkerMessage;
     $rootScope.editMessage = $rootScope.clickedMarkerMessage;
-    console.log('clicked edit');
-    console.log($rootScope.clickedMarker, $rootScope.clickedMarkerCoords.lat, $rootScope.clickedMarkerCoords.lng, $rootScope.clickedMarkerMessage);
+    // console.log('clicked edit');
+    // console.log($rootScope.clickedMarker, $rootScope.clickedMarkerCoords.lat, $rootScope.clickedMarkerCoords.lng, $rootScope.clickedMarkerMessage);
   };
 
   $rootScope.changeMessage = function(editMessage) {
     if ($rootScope.editMessage) {
       for (var i = 0; i < $rootScope.markers.length; i++) {
         if ($rootScope.markers[i].id === $rootScope.clickedMarkerID) {
-          console.log('yes');
-          console.log($rootScope.markers[i].message);
+          // console.log('yes');
+          // console.log($rootScope.markers[i].message);
           $rootScope.markers[i].message = $rootScope.editMessage + markerHTML;
-          console.log($rootScope.markers[i].message);
+          // console.log($rootScope.markers[i].message);
           $rootScope.clickedMarker.closePopup();
         }
       }
@@ -662,7 +662,7 @@ app.controller("MyHappyPlacesMapController", function($scope, $state, happyplace
     console.log('clicked remove');
     happyplaceService.removeHappyPlace($rootScope.clickedMarkerID)
     .then(function(data) {
-      console.log('you deleted this Happy Place', data);
+      // console.log('you deleted this Happy Place', data);
       for (var i = 0; i < $rootScope.markers.length; i++) {
         if ($rootScope.markers[i].message.slice(0, $rootScope.markers[i].message.indexOf('<')) === $rootScope.clickedMarkerMessage) {
           $rootScope.markers.splice(i, 1);
